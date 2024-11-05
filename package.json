@@ -1,7 +1,7 @@
 {
   "name": "@byc/tipc",
   "type": "module",
-  "version": "0.0.1",
+  "version": "0.0.4",
   "description": "",
   "author": "",
   "license": "ISC",
@@ -9,9 +9,13 @@
   "exports": {
     ".": {
       "dev": "./src/index.ts",
-      "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
+    },
+    "./type": {
+      "dev": "./src/type.ts",
+      "import": "./dist/type.d.ts",
+      "require": "./dist/type.d.ts"
     }
   },
   "types": "./dist/index.d.ts",

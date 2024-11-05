@@ -47,5 +47,3 @@ export type ExposeInvoke<T extends IpcHandler> = OmitInvokeEvent<MethodToPromise
 
 // 获取渲染进程监听器的类型
 export type ExposeListener = <T extends Obj>() => <K extends keyof T = keyof T>(method: K, callback: (...args: Parameters<T[K]>) => void) => void
-
-export {}

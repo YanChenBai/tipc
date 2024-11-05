@@ -1,8 +1,6 @@
 import type { BrowserWindow } from 'electron'
-import type { Invoke, IpcHandler, Listener } from './types'
+import type { Invoke, IpcHandler, Listener } from './type'
 import { ipcMain } from 'electron'
-
-export type { ExposeInvoke, ExposeListener, Listener } from './types'
 
 // 在主进程中注册 IPC 处理程序
 export function registerHandler(api: IpcHandler) {
