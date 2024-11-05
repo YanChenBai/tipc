@@ -1,15 +1,10 @@
-import type { IpcMainInvokeEvent } from 'electron'
+import type { BrowserWindow, IpcMainInvokeEvent } from 'electron'
 
 export type Func = (...args: any[]) => any
-type Obj = Record<string, any>
+export type Obj = Record<string, any>
 
 export type Invoke = (channel: string, ...args: any[]) => Promise<any>
 export type Listener = (channel: string, callback: (...args: any[]) => void) => void
-
-export interface IpcHandler {
-  name: string
-  handlers: Record<string, Func>
-}
 
 /** 忽略函数的第一参数  */
 type OmitFirstParam<F, T> = F extends (arg1: infer Q, ...args: infer P) => infer R
@@ -25,25 +20,21 @@ type OmitInvokeEvent<T> = {
     : T[K] extends Obj ? OmitInvokeEvent<T[K]> : T[K]
 }
 
-/** 函数返回结果转Promise */
-type FuncToPromise<T extends Func> = T extends (...args: infer A) => infer R
-  ? (...args: A) => R extends Promise<any> ? R : Promise<R> // 如果返回值就是Promise则直接返回
-  : T
-
-/** 函数返回值转Promise */
-type MethodToPromise<T> = {
-  [K in keyof T]: T[K] extends Func
-    ? FuncToPromise<T[K]>
-    : T[K] extends Obj ? MethodToPromise<T[K]> : T[K]
-}
-
 /** 排除非函数的属性 */
 type OmitNonFunc<T> = {
   [K in keyof T as T[K] extends Func ? K : never]: T[K]
 }
 
+type GetExposeInvoke<T extends Obj> =
+<K extends keyof T = keyof T, R = ReturnType<T[K]>>(method: K, ...args: Parameters<T[K]>) => R extends Promise<any> ? R : Promise<R>
+
 // 获取主进程暴露的方法类型
-export type ExposeInvoke<T extends IpcHandler> = OmitInvokeEvent<MethodToPromise<OmitNonFunc<T['handlers']>>>
+export type ExposeInvoke = <T extends Obj>() => GetExposeInvoke<OmitInvokeEvent<OmitNonFunc<T>>>
 
 // 获取渲染进程监听器的类型
-export type ExposeListener = <T extends Obj>() => <K extends keyof T = keyof T>(method: K, callback: (...args: Parameters<T[K]>) => void) => void
+export type ExposeListener = <T extends Obj>() =>
+<K extends keyof T = keyof T>(method: K, callback: (...args: Parameters<T[K]>) => void) => void
+
+export type ObjectToHandler<T extends Obj> = OmitNonFunc<{
+  [K in keyof T]: (event: IpcMainInvokeEvent, win: BrowserWindow, ...args: Parameters<T[K]>) => ReturnType<T[K]>
+}>

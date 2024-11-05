@@ -1,15 +1,12 @@
-import type { BrowserWindow } from 'electron'
-import type { Invoke, IpcHandler, Listener } from './type'
-import { ipcMain } from 'electron'
+import type { Func, Invoke, Listener, Obj, ObjectToHandler } from './type'
+import { BrowserWindow, ipcMain } from 'electron'
+import { formatChannelName, GET_WIN_ID_CHANNEL, INVOKE_CHANNEL } from './common'
 
 // 在主进程中注册 IPC 处理程序
-export function registerHandler(api: IpcHandler) {
-  const { handlers, name } = api
+export function registerHandler(win: BrowserWindow, handlers: Obj) {
+  const name = formatChannelName(win.id, INVOKE_CHANNEL)
 
-  if (!handlers)
-    return
-
-  ipcMain.handle(name, async (event, method: string, ...args: any[]) => {
+  ipcMain.handle(formatChannelName(win.id, INVOKE_CHANNEL), async (event, method: string, ...args: any[]) => {
     const func = handlers[method]
 
     try {
@@ -19,7 +16,9 @@ export function registerHandler(api: IpcHandler) {
       if (typeof func !== 'function')
         throw new Error(`${name} channel: method ${method} is not a function.`)
 
-      const result = await Promise.resolve(func(event, ...args))
+      const win = BrowserWindow.getAllWindows().find(i => i.id === event.sender.id)
+
+      const result = await Promise.resolve(func(event, win, ...args))
 
       return result
     }
@@ -32,24 +31,12 @@ export function registerHandler(api: IpcHandler) {
 // 创建发送 IPC 消息的函数
 export function createSender<T extends Record<string, any>>(win: BrowserWindow) {
   return <K extends keyof T>(method: K, ...args: T[K] extends (...args: infer A) => any ? A : never) => {
-    win.webContents.send(method as string, ...args)
+    win.webContents.send(formatChannelName(win.id, String(method)), ...args)
   }
 }
 
-// 暴露主进程的 IPC 调用方法
-export function exposeInvoke(invoke: Invoke, mainHandler: IpcHandler) {
-  const { handlers, name } = mainHandler
-
-  return Object.fromEntries(
-    Object.keys(handlers)
-      .filter(method => typeof handlers[method] === 'function')
-      .map(method => [method, (...args: any[]) => invoke(name, method, ...args)]),
-  )
+export function initTIPC() {
+  ipcMain.on(GET_WIN_ID_CHANNEL, event => event.returnValue = event.sender.id)
 }
 
-// 暴露渲染进程的 IPC 监听函数
-export function exposeListener<T extends Record<string, any>>(listener: Listener) {
-  return () => <K extends keyof T>(method: K, callback: (...args: Parameters<T[K]>) => void) => {
-    listener(method as string, (...args: Parameters<T[K]>) => callback(...args))
-  }
-}
+export { Func, Invoke, Listener, Obj, ObjectToHandler }

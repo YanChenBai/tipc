@@ -1,19 +1,16 @@
 <script setup lang="ts">
-import type { MainSender } from 'src/commons/main'
+import type { ICommonHandler } from '../../commons/handler/commonHandler'
+import type { ICommonListener } from '../../commons/listener/commonListener'
 
+const mainListener = window.createListener<ICommonListener>()
+const mainInvoke = window.createInvoke<ICommonHandler>()
 function send() {
-  window.api.main.getName()
-    .then((data) => {
-    // eslint-disable-next-line no-console
-      console.log(data)
-    })
+  mainInvoke('minimize')
 }
 
-const mainListener = window.createListener<MainSender>()
-
-mainListener('sum', (a, b) => {
+mainListener('tell', (msg) => {
   // eslint-disable-next-line no-console
-  console.log(a + b)
+  console.log(msg)
 })
 </script>
 

@@ -1,12 +1,9 @@
-import type { ExposeInvoke, ExposeListener } from 'tipc/type'
-import type { MainHandlerType } from '../main/handler'
+import type { ExposeInvoke, ExposeListener } from 'tipc/renderer'
 
 declare global {
   interface Window {
     createListener: ExposeListener
-    api: {
-      main: ExposeInvoke<MainHandlerType>
-    }
+    createInvoke: ExposeInvoke
   }
 }
 

@@ -1,7 +1,7 @@
 {
   "name": "@byc/tipc",
   "type": "module",
-  "version": "0.0.4",
+  "version": "0.0.10",
   "description": "",
   "author": "",
   "license": "ISC",
@@ -12,13 +12,25 @@
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
     },
-    "./type": {
-      "dev": "./src/type.ts",
-      "import": "./dist/type.d.ts",
-      "require": "./dist/type.d.ts"
+    "./preload": {
+      "dev": "./src/preload.ts",
+      "import": "./dist/preload.js",
+      "require": "./dist/preload.cjs"
+    },
+    "./renderer": {
+      "dev": "./src/renderer.ts",
+      "import": "./dist/renderer.d.ts",
+      "require": "./dist/renderer.d.ts"
     }
   },
   "types": "./dist/index.d.ts",
+  "typesVersions": {
+    "*": {
+      ".": ["./dist/index.d.ts"],
+      "preload": ["dist/preload.d.ts"],
+      "renderer": ["dist/renderer.d.ts"]
+    }
+  },
   "files": [
     "dist"
   ],

@@ -5,7 +5,11 @@ const isDev = process.env.NODE_ENV === 'development'
 
 export default defineConfig({
   tsconfig: './tsconfig.node.json',
-  entry: ['src/index.ts', 'src/type.ts'],
+  entry: {
+    index: 'src/index.ts',
+    preload: 'src/preload.ts',
+    renderer: 'src/renderer.ts',
+  },
   external: ['electron'],
   format: ['cjs', 'esm'],
   sourcemap: isDev,
