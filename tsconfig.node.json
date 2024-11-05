@@ -1,0 +1,18 @@
+{
+  "extends": "@electron-toolkit/tsconfig/tsconfig.node.json",
+  "compilerOptions": {
+    "target": "ES2016",
+    "strict": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "playground",
+    "node_modules",
+    "dist"
+  ]
+}
