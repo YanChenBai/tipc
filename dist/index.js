@@ -36,8 +36,12 @@ function createSender(win, props) {
 function initTIPC() {
   ipcMain.on(GET_WIN_ID_CHANNEL, (event) => event.returnValue = event.sender.id);
 }
+function defineHandler(handler) {
+  return typeof handler === "function" ? handler() : handler;
+}
 export {
   createSender,
+  defineHandler,
   initTIPC,
   registerHandler
 };

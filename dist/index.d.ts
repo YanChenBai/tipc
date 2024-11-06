@@ -1,9 +1,10 @@
-import { O as Obj } from './type-B7D03Yg-.js';
-export { F as Func, a as ObjectToHandler, R as Req } from './type-B7D03Yg-.js';
+import { O as Obj, b as ObjectToHandler } from './type-f_EitbQS.js';
+export { F as Func, R as Req } from './type-f_EitbQS.js';
 import { BrowserWindow } from 'electron';
 
 declare function registerHandler(win: BrowserWindow, handlers: Obj): void;
 declare function createSender<T extends Obj>(win: BrowserWindow, props: T): T;
 declare function initTIPC(): void;
+declare function defineHandler<T extends Obj, R = ObjectToHandler<T>>(handler: R | (() => R)): T | R;
 
-export { Obj, createSender, initTIPC, registerHandler };
+export { Obj, ObjectToHandler, createSender, defineHandler, initTIPC, registerHandler };

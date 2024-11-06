@@ -1,3 +1,3 @@
 export { TIpcFunc } from './common.cjs';
-export { E as ExposeListener } from './type-B7D03Yg-.cjs';
+export { E as ExposeInvoke, a as ExposeListener } from './type-f_EitbQS.cjs';
 import 'electron';

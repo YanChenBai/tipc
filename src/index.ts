@@ -45,4 +45,9 @@ export function initTIPC() {
   ipcMain.on(GET_WIN_ID_CHANNEL, event => event.returnValue = event.sender.id)
 }
 
+// 用于创建Handler时辅助类型推断的工具函数
+export function defineHandler<T extends Obj, R = ObjectToHandler<T>>(handler: R | (() => R)) {
+  return typeof handler === 'function' ? (handler as () => T)() : handler
+}
+
 export { Func, Obj, ObjectToHandler, Req }

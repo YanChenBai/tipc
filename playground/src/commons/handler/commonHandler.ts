@@ -1,5 +1,7 @@
+import { TIpcFunc } from 'tipc/renderer'
+
 export const CommonHandlerMethods = {
-  minimize: Function as () => void,
+  minimize: TIpcFunc as () => void,
 }
 
 export type ICommonHandler = typeof CommonHandlerMethods
