@@ -3,7 +3,7 @@ import {
   INVOKE_CHANNEL,
   TIpcFunc,
   formatChannelName
-} from "./chunk-3RA6ETZ3.js";
+} from "./chunk-ACED7LHG.js";
 
 // src/preload.ts
 import { ipcRenderer } from "electron";

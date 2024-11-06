@@ -1,15 +1,14 @@
 import {
   GET_WIN_ID_CHANNEL,
   INVOKE_CHANNEL,
-  __async,
   formatChannelName
-} from "./chunk-3RA6ETZ3.js";
+} from "./chunk-ACED7LHG.js";
 
 // src/index.ts
 import { BrowserWindow, ipcMain } from "electron";
 function registerHandler(win, handlers) {
   const name = formatChannelName(win.id, INVOKE_CHANNEL);
-  ipcMain.handle(formatChannelName(win.id, INVOKE_CHANNEL), (event, method, ...args) => __async(this, null, function* () {
+  ipcMain.handle(formatChannelName(win.id, INVOKE_CHANNEL), async (event, method, ...args) => {
     const func = handlers[method];
     try {
       if (!func)
@@ -17,12 +16,12 @@ function registerHandler(win, handlers) {
       if (typeof func !== "function")
         throw new Error(`${name} channel: method ${method} is not a function.`);
       const win2 = BrowserWindow.getAllWindows().find((i) => i.id === event.sender.id);
-      const result = yield Promise.resolve(func({ event, win: win2 }, ...args));
+      const result = await Promise.resolve(func({ event, win: win2 }, ...args));
       return result;
     } catch (error) {
       console.error(String(error));
     }
-  }));
+  });
 }
 function createSender(win, props) {
   const initial = {};

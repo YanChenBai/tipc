@@ -9,6 +9,7 @@ export default defineConfig({
     index: 'src/index.ts',
     preload: 'src/preload.ts',
     renderer: 'src/renderer.ts',
+    common: 'src/common.ts',
   },
   external: ['electron'],
   format: ['cjs', 'esm'],
@@ -17,7 +18,6 @@ export default defineConfig({
   splitting: true,
   clean: true,
   dts: true,
-  skipNodeModulesBundle: true,
   esbuildOptions(options) {
     options.conditions = ['dev']
   },

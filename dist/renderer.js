@@ -1,6 +1,6 @@
 import {
   TIpcFunc
-} from "./chunk-3RA6ETZ3.js";
+} from "./chunk-ACED7LHG.js";
 export {
   TIpcFunc
 };

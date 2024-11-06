@@ -1,5 +1,5 @@
 import { I as Invoke, O as Obj, L as Listener } from './type-C2ttT2qB.js';
-export { TIpcFunc } from './renderer.js';
+export { TIpcFunc } from './common.js';
 import 'electron';
 
 declare function exposeInvoke(invoke: Invoke, props: Obj): Record<string, any>;
