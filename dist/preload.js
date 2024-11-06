@@ -7,23 +7,28 @@ import {
 
 // src/preload.ts
 import { ipcRenderer } from "electron";
-function getInvokes(invoke, channel, props) {
+function exposeInvoke(props) {
+  const id = ipcRenderer.sendSync(GET_WIN_ID_CHANNEL);
+  const channel = formatChannelName(id, INVOKE_CHANNEL);
   return Object.keys(props).reduce((acc, methodName) => {
     const method = props[methodName];
     if (method === Function)
-      acc[methodName] = (...args) => invoke(channel, methodName, ...args);
+      acc[methodName] = (...args) => ipcRenderer.invoke(channel, methodName, ...args);
     return acc;
   }, {});
 }
-function exposeInvoke(invoke, props) {
+var listener = (channel, cb) => ipcRenderer.on(channel, (_e, ...args) => cb(...args));
+function exposeListener(props) {
   const id = ipcRenderer.sendSync(GET_WIN_ID_CHANNEL);
-  return getInvokes(invoke, formatChannelName(id, INVOKE_CHANNEL), props);
-}
-function exposeListener(listener) {
-  const id = ipcRenderer.sendSync(GET_WIN_ID_CHANNEL);
-  return () => (method, callback) => {
-    listener(formatChannelName(id, String(method)), (...args) => callback(...args));
-  };
+  return Object.keys(props).reduce((acc, methodName) => {
+    const method = props[methodName];
+    if (method === Function) {
+      acc[methodName] = (cb) => {
+        listener(formatChannelName(id, methodName), (...args) => cb(...args));
+      };
+    }
+    return acc;
+  }, {});
 }
 export {
   TIpcFunc,

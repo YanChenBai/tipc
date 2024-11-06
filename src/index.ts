@@ -1,4 +1,4 @@
-import type { Func, Invoke, Listener, Obj, ObjectToHandler, Req } from './type'
+import type { Func, Obj, ObjectToHandler, Req } from './type'
 import { BrowserWindow, ipcMain } from 'electron'
 import { formatChannelName, GET_WIN_ID_CHANNEL, INVOKE_CHANNEL } from './common'
 
@@ -45,4 +45,4 @@ export function initTIPC() {
   ipcMain.on(GET_WIN_ID_CHANNEL, event => event.returnValue = event.sender.id)
 }
 
-export { Func, Invoke, Listener, Obj, ObjectToHandler, Req }
+export { Func, Obj, ObjectToHandler, Req }

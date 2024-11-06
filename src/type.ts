@@ -4,9 +4,6 @@ export type Func = (...args: any[]) => any
 export type Obj = Record<string, any>
 export interface Req { event: IpcMainInvokeEvent, win: BrowserWindow }
 
-export type Invoke = (channel: string, ...args: any[]) => Promise<any>
-export type Listener = (channel: string, callback: (...args: any[]) => void) => void
-
 /** 忽略函数的第一参数  */
 type OmitFirstParam<F, T> = F extends (arg1: infer Q, ...args: infer P) => infer R
   ? Q extends T
@@ -33,8 +30,9 @@ type GetExposeInvoke<T extends Obj> =
 export type ExposeInvoke = <T extends Obj>() => GetExposeInvoke<OmitInvokeEvent<OmitNonFunc<T>>>
 
 // 获取渲染进程监听器的类型
-export type ExposeListener = <T extends Obj>() =>
-<K extends keyof T = keyof T>(method: K, callback: (...args: Parameters<T[K]>) => void) => void
+export type ExposeListener<T extends Obj> = OmitNonFunc<{
+  [K in keyof T]: (callback: (...args: Parameters<T[K]>) => void) => void
+}>
 
 export type ObjectToHandler<T extends Obj> = OmitNonFunc<{
   [K in keyof T]: (req: Req, ...args: Parameters<T[K]>) => ReturnType<T[K]>

@@ -1,8 +1,8 @@
-import { I as Invoke, O as Obj, L as Listener } from './type-C2ttT2qB.cjs';
+import { O as Obj } from './type-B7D03Yg-.cjs';
 export { TIpcFunc } from './common.cjs';
 import 'electron';
 
-declare function exposeInvoke(invoke: Invoke, props: Obj): Record<string, any>;
-declare function exposeListener<T extends Obj>(listener: Listener): () => <K extends keyof T>(method: K, callback: (...args: any[]) => void) => void;
+declare function exposeInvoke(props: Obj): Obj;
+declare function exposeListener(props: Obj): Obj;
 
 export { exposeInvoke, exposeListener };

@@ -31,12 +31,12 @@
         "./dist/index.d.cts"
       ],
       "preload": [
-        "dist/preload.d.ts",
-        "dist/preload.d.cts"
+        "./dist/preload.d.ts",
+        "./dist/preload.d.cts"
       ],
       "renderer": [
-        "dist/renderer.d.ts",
-        "dist/renderer.d.cts"
+        "./dist/renderer.d.ts",
+        "./dist/renderer.d.cts"
       ]
     }
   },

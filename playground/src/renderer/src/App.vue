@@ -1,15 +1,11 @@
 <script setup lang="ts">
-import type { ICommonListener } from '../../commons/listener/commonListener'
-
-const mainListener = window.createListener<ICommonListener>()
-
 function send() {
   window.invoke.minimize()
 }
 
-mainListener('tell', (msg) => {
+window.listener.tell((e) => {
   // eslint-disable-next-line no-console
-  console.log(msg)
+  console.log(e)
 })
 </script>
 
