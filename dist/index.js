@@ -3,7 +3,7 @@ import {
   INVOKE_CHANNEL,
   __async,
   formatChannelName
-} from "./chunk-NZWGKPNT.js";
+} from "./chunk-3RA6ETZ3.js";
 
 // src/index.ts
 import { BrowserWindow, ipcMain } from "electron";

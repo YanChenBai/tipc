@@ -25,10 +25,12 @@ var INVOKE_CHANNEL = "TIPC:INVOKE";
 function formatChannelName(id, name) {
   return `TIPC:ID[${id}]:NAME[${name}]`;
 }
+var TIpcFunc = Function;
 
 
 
 
 
 
-exports.__async = __async; exports.GET_WIN_ID_CHANNEL = GET_WIN_ID_CHANNEL; exports.INVOKE_CHANNEL = INVOKE_CHANNEL; exports.formatChannelName = formatChannelName;
+
+exports.__async = __async; exports.GET_WIN_ID_CHANNEL = GET_WIN_ID_CHANNEL; exports.INVOKE_CHANNEL = INVOKE_CHANNEL; exports.formatChannelName = formatChannelName; exports.TIpcFunc = TIpcFunc;

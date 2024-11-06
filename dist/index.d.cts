@@ -1,5 +1,5 @@
-import { O as Obj } from './renderer-C2ttT2qB.cjs';
-export { F as Func, I as Invoke, L as Listener, a as ObjectToHandler, R as Req } from './renderer-C2ttT2qB.cjs';
+import { O as Obj } from './type-C2ttT2qB.cjs';
+export { F as Func, I as Invoke, L as Listener, a as ObjectToHandler, R as Req } from './type-C2ttT2qB.cjs';
 import { BrowserWindow } from 'electron';
 
 declare function registerHandler(win: BrowserWindow, handlers: Obj): void;

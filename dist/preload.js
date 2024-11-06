@@ -1,8 +1,9 @@
 import {
   GET_WIN_ID_CHANNEL,
   INVOKE_CHANNEL,
+  TIpcFunc,
   formatChannelName
-} from "./chunk-NZWGKPNT.js";
+} from "./chunk-3RA6ETZ3.js";
 
 // src/preload.ts
 import { ipcRenderer } from "electron";
@@ -25,6 +26,7 @@ function exposeListener(listener) {
   };
 }
 export {
+  TIpcFunc,
   exposeInvoke,
   exposeListener
 };

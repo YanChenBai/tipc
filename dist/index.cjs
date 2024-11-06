@@ -3,13 +3,13 @@
 
 
 
-var _chunk3XFRGB67cjs = require('./chunk-3XFRGB67.cjs');
+var _chunkEQERPM4Qcjs = require('./chunk-EQERPM4Q.cjs');
 
 // src/index.ts
 var _electron = require('electron');
 function registerHandler(win, handlers) {
-  const name = _chunk3XFRGB67cjs.formatChannelName.call(void 0, win.id, _chunk3XFRGB67cjs.INVOKE_CHANNEL);
-  _electron.ipcMain.handle(_chunk3XFRGB67cjs.formatChannelName.call(void 0, win.id, _chunk3XFRGB67cjs.INVOKE_CHANNEL), (event, method, ...args) => _chunk3XFRGB67cjs.__async.call(void 0, this, null, function* () {
+  const name = _chunkEQERPM4Qcjs.formatChannelName.call(void 0, win.id, _chunkEQERPM4Qcjs.INVOKE_CHANNEL);
+  _electron.ipcMain.handle(_chunkEQERPM4Qcjs.formatChannelName.call(void 0, win.id, _chunkEQERPM4Qcjs.INVOKE_CHANNEL), (event, method, ...args) => _chunkEQERPM4Qcjs.__async.call(void 0, this, null, function* () {
     const func = handlers[method];
     try {
       if (!func)
@@ -29,13 +29,13 @@ function createSender(win, props) {
   return Object.keys(props).reduce((acc, methodName) => {
     const method = props[methodName];
     if (typeof method === "function") {
-      acc[methodName] = (...args) => win.webContents.send(_chunk3XFRGB67cjs.formatChannelName.call(void 0, win.id, methodName), ...args);
+      acc[methodName] = (...args) => win.webContents.send(_chunkEQERPM4Qcjs.formatChannelName.call(void 0, win.id, methodName), ...args);
     }
     return acc;
   }, initial);
 }
 function initTIPC() {
-  _electron.ipcMain.on(_chunk3XFRGB67cjs.GET_WIN_ID_CHANNEL, (event) => event.returnValue = event.sender.id);
+  _electron.ipcMain.on(_chunkEQERPM4Qcjs.GET_WIN_ID_CHANNEL, (event) => event.returnValue = event.sender.id);
 }
 
 

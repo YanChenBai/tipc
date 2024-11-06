@@ -1,2 +1,6 @@
-export { E as ExposeListener } from './renderer-C2ttT2qB.cjs';
+export { E as ExposeListener } from './type-C2ttT2qB.cjs';
 import 'electron';
+
+declare const TIpcFunc: any;
+
+export { TIpcFunc };
