@@ -7,14 +7,14 @@ import {
 // src/index.ts
 import { BrowserWindow, ipcMain } from "electron";
 function registerHandler(win, handlers) {
-  const name = formatChannelName(win.id, INVOKE_CHANNEL);
-  ipcMain.handle(formatChannelName(win.id, INVOKE_CHANNEL), async (event, method, ...args) => {
+  const channel = formatChannelName(win.id, INVOKE_CHANNEL);
+  ipcMain.handle(channel, async (event, method, ...args) => {
     const func = handlers[method];
     try {
       if (!func)
-        throw new Error(`${name} channel: method ${method} not found.`);
+        throw new Error(`${channel} channel: method ${method} not found.`);
       if (typeof func !== "function")
-        throw new Error(`${name} channel: method ${method} is not a function.`);
+        throw new Error(`${channel} channel: method ${method} is not a function.`);
       const win2 = BrowserWindow.getAllWindows().find((i) => i.id === event.sender.id);
       const result = await Promise.resolve(func({ event, win: win2 }, ...args));
       return result;
@@ -22,6 +22,8 @@ function registerHandler(win, handlers) {
       console.error(String(error));
     }
   });
+  win.on("closed", () => ipcMain.removeHandler(channel));
+  return channel;
 }
 function createSender(win, props) {
   const initial = {};

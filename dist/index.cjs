@@ -7,14 +7,14 @@ var _chunkJFFF62F3cjs = require('./chunk-JFFF62F3.cjs');
 // src/index.ts
 var _electron = require('electron');
 function registerHandler(win, handlers) {
-  const name = _chunkJFFF62F3cjs.formatChannelName.call(void 0, win.id, _chunkJFFF62F3cjs.INVOKE_CHANNEL);
-  _electron.ipcMain.handle(_chunkJFFF62F3cjs.formatChannelName.call(void 0, win.id, _chunkJFFF62F3cjs.INVOKE_CHANNEL), async (event, method, ...args) => {
+  const channel = _chunkJFFF62F3cjs.formatChannelName.call(void 0, win.id, _chunkJFFF62F3cjs.INVOKE_CHANNEL);
+  _electron.ipcMain.handle(channel, async (event, method, ...args) => {
     const func = handlers[method];
     try {
       if (!func)
-        throw new Error(`${name} channel: method ${method} not found.`);
+        throw new Error(`${channel} channel: method ${method} not found.`);
       if (typeof func !== "function")
-        throw new Error(`${name} channel: method ${method} is not a function.`);
+        throw new Error(`${channel} channel: method ${method} is not a function.`);
       const win2 = _electron.BrowserWindow.getAllWindows().find((i) => i.id === event.sender.id);
       const result = await Promise.resolve(func({ event, win: win2 }, ...args));
       return result;
@@ -22,6 +22,8 @@ function registerHandler(win, handlers) {
       console.error(String(error));
     }
   });
+  win.on("closed", () => _electron.ipcMain.removeHandler(channel));
+  return channel;
 }
 function createSender(win, props) {
   const initial = {};

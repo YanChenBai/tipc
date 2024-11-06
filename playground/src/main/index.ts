@@ -22,6 +22,7 @@ function createWindow() {
   })
 
   registerHandler(win, new CommonHandler())
+
   const sender = createSender(win, CommonListenerMethods)
 
   if (is.dev && process.env.ELECTRON_RENDERER_URL) {

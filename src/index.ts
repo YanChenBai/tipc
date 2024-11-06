@@ -4,17 +4,17 @@ import { formatChannelName, GET_WIN_ID_CHANNEL, INVOKE_CHANNEL } from './common'
 
 // 在主进程中注册 IPC 处理程序
 export function registerHandler(win: BrowserWindow, handlers: Obj) {
-  const name = formatChannelName(win.id, INVOKE_CHANNEL)
+  const channel = formatChannelName(win.id, INVOKE_CHANNEL)
 
-  ipcMain.handle(formatChannelName(win.id, INVOKE_CHANNEL), async (event, method: string, ...args: any[]) => {
+  ipcMain.handle(channel, async (event, method: string, ...args: any[]) => {
     const func = handlers[method]
 
     try {
       if (!func)
-        throw new Error(`${name} channel: method ${method} not found.`)
+        throw new Error(`${channel} channel: method ${method} not found.`)
 
       if (typeof func !== 'function')
-        throw new Error(`${name} channel: method ${method} is not a function.`)
+        throw new Error(`${channel} channel: method ${method} is not a function.`)
 
       const win = BrowserWindow.getAllWindows().find(i => i.id === event.sender.id)
 
@@ -26,6 +26,10 @@ export function registerHandler(win: BrowserWindow, handlers: Obj) {
       console.error(String(error))
     }
   })
+
+  win.on('closed', () => ipcMain.removeHandler(channel))
+
+  return channel
 }
 
 // 创建发送 IPC 消息的函数
