@@ -1,10 +1,10 @@
-import type { ICommonListener } from '../commons/listener/commonListener'
 import { join } from 'node:path'
 import process from 'node:process'
 import { is } from '@electron-toolkit/utils'
 import { app, BrowserWindow } from 'electron'
 import { createSender, initTIPC, registerHandler } from 'tipc'
 import icon from '../../resources/icon.png?asset'
+import { CommonListenerMethods } from '../commons/listener/commonListener'
 import { CommonHandler } from './handler'
 
 function createWindow() {
@@ -22,7 +22,7 @@ function createWindow() {
   })
 
   registerHandler(win, new CommonHandler())
-  const sender = createSender<ICommonListener>(win)
+  const sender = createSender(win, CommonListenerMethods)
 
   if (is.dev && process.env.ELECTRON_RENDERER_URL) {
     win.loadURL(process.env.ELECTRON_RENDERER_URL)
@@ -31,13 +31,16 @@ function createWindow() {
     win.loadFile(join(__dirname, '../renderer/index.html'))
   }
 
-  setInterval(() => sender('tell', 'hello!'), 1000)
+  const timer = setInterval(() => sender.tell('hello!'), 1000)
+
+  win.once('closed', () => clearInterval(timer))
 
   return win
 }
 
 app.whenReady().then(() => {
   initTIPC()
+  createWindow()
   createWindow()
 })
 

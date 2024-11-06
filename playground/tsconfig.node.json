@@ -6,7 +6,7 @@
     "experimentalDecorators": true,
     "customConditions": ["dev"],
     "moduleResolution": "Bundler",
-    "types": ["electron-vite/node", "reflect-metadata"],
+    "types": ["electron-vite/node"],
     "strict": true
   },
   "include": ["electron.vite.config.*", "src/main/**/*", "src/preload/**/*", "../src/*", "src/commons/**/*"]

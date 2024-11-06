@@ -1,1 +1,3 @@
-export type { ExposeInvoke, ExposeListener } from './type'
+export { TIpcFunc } from './common'
+
+export type { ExposeListener } from './type'

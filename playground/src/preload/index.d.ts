@@ -1,9 +1,10 @@
-import type { ExposeInvoke, ExposeListener } from 'tipc/renderer'
+import type { ExposeListener } from 'tipc/renderer'
+import type { ICommonHandler } from '../commons/handler/commonHandler'
 
 declare global {
   interface Window {
     createListener: ExposeListener
-    createInvoke: ExposeInvoke
+    invoke: ICommonHandler
   }
 }
 

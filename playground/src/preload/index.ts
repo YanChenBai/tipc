@@ -1,7 +1,8 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { exposeInvoke, exposeListener } from 'tipc/preload'
+import { CommonHandlerMethods } from '../commons/handler/commonHandler'
 
-contextBridge.exposeInMainWorld('createInvoke', exposeInvoke(ipcRenderer.invoke))
+contextBridge.exposeInMainWorld('invoke', exposeInvoke(ipcRenderer.invoke, CommonHandlerMethods))
 
 contextBridge.exposeInMainWorld('createListener', exposeListener(
   (channel: string, cb: (...args: any[]) => void) => {

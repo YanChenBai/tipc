@@ -2,6 +2,7 @@ import type { BrowserWindow, IpcMainInvokeEvent } from 'electron'
 
 export type Func = (...args: any[]) => any
 export type Obj = Record<string, any>
+export interface Req { event: IpcMainInvokeEvent, win: BrowserWindow }
 
 export type Invoke = (channel: string, ...args: any[]) => Promise<any>
 export type Listener = (channel: string, callback: (...args: any[]) => void) => void
@@ -36,5 +37,5 @@ export type ExposeListener = <T extends Obj>() =>
 <K extends keyof T = keyof T>(method: K, callback: (...args: Parameters<T[K]>) => void) => void
 
 export type ObjectToHandler<T extends Obj> = OmitNonFunc<{
-  [K in keyof T]: (event: IpcMainInvokeEvent, win: BrowserWindow, ...args: Parameters<T[K]>) => ReturnType<T[K]>
+  [K in keyof T]: (req: Req, ...args: Parameters<T[K]>) => ReturnType<T[K]>
 }>

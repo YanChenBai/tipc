@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import type { ICommonHandler } from '../../commons/handler/commonHandler'
 import type { ICommonListener } from '../../commons/listener/commonListener'
 
 const mainListener = window.createListener<ICommonListener>()
-const mainInvoke = window.createInvoke<ICommonHandler>()
+
 function send() {
-  mainInvoke('minimize')
+  window.invoke.minimize()
 }
 
 mainListener('tell', (msg) => {

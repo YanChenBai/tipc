@@ -1,4 +1,4 @@
-import type { Func, Invoke, Listener, Obj, ObjectToHandler } from './type'
+import type { Func, Invoke, Listener, Obj, ObjectToHandler, Req } from './type'
 import { BrowserWindow, ipcMain } from 'electron'
 import { formatChannelName, GET_WIN_ID_CHANNEL, INVOKE_CHANNEL } from './common'
 
@@ -18,7 +18,7 @@ export function registerHandler(win: BrowserWindow, handlers: Obj) {
 
       const win = BrowserWindow.getAllWindows().find(i => i.id === event.sender.id)
 
-      const result = await Promise.resolve(func(event, win, ...args))
+      const result = await Promise.resolve(func({ event, win }, ...args))
 
       return result
     }
@@ -29,14 +29,20 @@ export function registerHandler(win: BrowserWindow, handlers: Obj) {
 }
 
 // 创建发送 IPC 消息的函数
-export function createSender<T extends Record<string, any>>(win: BrowserWindow) {
-  return <K extends keyof T>(method: K, ...args: T[K] extends (...args: infer A) => any ? A : never) => {
-    win.webContents.send(formatChannelName(win.id, String(method)), ...args)
-  }
+export function createSender<T extends Obj>(win: BrowserWindow, props: T): T {
+  const initial = {} as T
+  return Object.keys(props).reduce((acc, methodName) => {
+    const method = props[methodName]
+    if (typeof method === 'function') {
+      (acc as any)[methodName] = (...args: any[]) =>
+        win.webContents.send(formatChannelName(win.id, methodName), ...args)
+    }
+    return acc
+  }, initial)
 }
 
 export function initTIPC() {
   ipcMain.on(GET_WIN_ID_CHANNEL, event => event.returnValue = event.sender.id)
 }
 
-export { Func, Invoke, Listener, Obj, ObjectToHandler }
+export { Func, Invoke, Listener, Obj, ObjectToHandler, Req }
