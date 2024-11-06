@@ -1,5 +1,5 @@
-import { O as Obj, b as ObjectToHandler } from './type-CqIQC4Q3.cjs';
-export { F as Func, R as Req } from './type-CqIQC4Q3.cjs';
+import { O as Obj, b as ObjectToHandler } from './type-xznbSeye.cjs';
+export { F as Func, R as Req } from './type-xznbSeye.cjs';
 import { BrowserWindow } from 'electron';
 
 declare function registerHandler(win: BrowserWindow, handlers: Obj): void;
