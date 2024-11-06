@@ -1,12 +1,12 @@
 <script setup lang="ts">
-function send() {
-  window.invoke.minimize()
-}
-
-window.listener.tell((e) => {
+const remove = window.listener.tell((e) => {
   // eslint-disable-next-line no-console
   console.log(e)
 })
+function send() {
+  window.invoke.minimize()
+  remove()
+}
 </script>
 
 <template>

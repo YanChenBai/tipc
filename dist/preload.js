@@ -17,14 +17,18 @@ function exposeInvoke(props) {
     return acc;
   }, {});
 }
-var listener = (channel, cb) => ipcRenderer.on(channel, (_e, ...args) => cb(...args));
 function exposeListener(props) {
   const id = ipcRenderer.sendSync(GET_WIN_ID_CHANNEL);
   return Object.keys(props).reduce((acc, methodName) => {
     const method = props[methodName];
     if (method === Function) {
       acc[methodName] = (cb) => {
-        listener(formatChannelName(id, methodName), (...args) => cb(...args));
+        const channel = formatChannelName(id, methodName);
+        const listener = (_e, ...args) => cb(...args);
+        ipcRenderer.on(channel, listener);
+        return () => {
+          ipcRenderer.removeListener(channel, listener);
+        };
       };
     }
     return acc;

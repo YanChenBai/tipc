@@ -32,7 +32,7 @@ export type ExposeInvoke<T extends Obj> = GetExposeInvoke<OmitInvokeEvent<OmitNo
 
 // 获取渲染进程监听器的类型
 export type ExposeListener<T extends Obj> = OmitNonFunc<{
-  [K in keyof T]: (callback: (...args: Parameters<T[K]>) => void) => void
+  [K in keyof T]: (callback: (...args: Parameters<T[K]>) => void) => () => void
 }>
 
 export type ObjectToHandler<T extends Obj> = OmitNonFunc<{
