@@ -10,88 +10,107 @@ $ pnpm install @byc/tipc
 
 ### Usage
 
+#### Common
+```typescript
+import { Method } from '@byc/tipc'
+
+export const CommonHandlerProps = {
+  minimize: Method as () => void,
+}
+
+export const CommonListenerProps = {
+  tell: Method as (msg: string) => void,
+
+}
+
+export type ICommonHandler = typeof CommonHandlerProps
+export type ICommonListener = typeof CommonListenerProps
+```
+
 #### Main Process
 ```typescript
-import { createSender, registerHandler } from '@byc/tipc'
+import type { ICommonHandler } from '../commons/tipc/common'
+import { join } from 'node:path'
+import process from 'node:process'
+import { is } from '@electron-toolkit/utils'
+import { app, BrowserWindow } from 'electron'
+import { defineHandler } from 'tipc'
+import { createSender, initTIPC, registerHandler } from 'tipc/main'
 
-export interface MainSender {
-  sum: (a: number, b: number) => void
-  diff: (a: number, b: number) => void
-}
+import { CommonListenerProps } from '../commons/tipc/common'
 
-export const MainHandler = {
-  name: 'main',
-  handlers: {
-    getName: () => 'byc',
-  },
-}
-
-export type MainHandlerType = typeof MainHandler
-
-const mainWindow = new BrowserWindow({
-  width: 900,
-  height: 670,
-  webPreferences: {
-    preload: join(__dirname, '../preload/index.js'),
-    sandbox: false,
-    nodeIntegration: false,
-    contextIsolation: true,
+// Handler Implementation
+export const commonHandler = defineHandler<ICommonHandler>({
+  minimize(req) {
+    req.win.minimize()
   },
 })
 
-// Register handler
-registerHandler(MainHandler)
+function createWindow() {
+  const win = new BrowserWindow({
+    width: 900,
+    height: 670,
+    autoHideMenuBar: true,
+    webPreferences: {
+      preload: join(__dirname, '../preload/index.js'),
+      sandbox: false,
+      nodeIntegration: false,
+      contextIsolation: true,
+    },
+  })
 
-const sender = createSender<MainSender>(mainWindow)
+  // Register Handler
+  registerHandler(win, commonHandler)
 
-// Send message to renderer process
-sender('sum', 1, 2)
+  // Create Sender
+  const sender = createSender(win, CommonListenerProps)
+
+  // Send Message to Renderer
+  sender.tell('hello!')
+
+  win.loadURL(process.env.ELECTRON_RENDERER_URL || '')
+}
+
+app.whenReady().then(() => {
+  initTIPC()
+  createWindow()
+})
+
+app.on('window-all-closed', () => app.quit())
 ```
 
-### Preload
+#### Preload
 ```typescript
-import { exposeInvoke, exposeListener } from '@byc/tipc'
-import { contextBridge, ipcRenderer } from 'electron'
-import { MainHandler } from '../main/handler'
+import { contextBridge } from 'electron'
+import { exposeInvoke, exposeListener } from 'tipc/preload'
+import { CommonHandlerProps, CommonListenerProps } from '../commons/tipc/common'
 
-contextBridge.exposeInMainWorld('api', {
-  main: exposeInvoke(ipcRenderer.invoke, MainHandler),
-})
-
-contextBridge.exposeInMainWorld('createListener', exposeListener(
-  (channel: string, cb: (...args: any[]) => void) => {
-    ipcRenderer.on(channel, (_e, ...args: any[]) => cb(...args))
-  },
-))
+// Expose API to Renderer
+contextBridge.exposeInMainWorld('invoke', exposeInvoke(CommonHandlerProps))
+contextBridge.exposeInMainWorld('listener', exposeListener(CommonListenerProps))
 ```
 
-### Render Process
+#### Render Process
 ```typescript
 // index.d.ts
-import type { ExposeInvoke, ExposeListener } from '@byc/tipc'
+import type { ExposeInvokes, ExposeListeners } from 'tipc/renderer'
+import type { ICommonHandler, ICommonListener } from '../commons/tipc/common'
 
 declare global {
   interface Window {
-    createListener: ExposeListener
-    api: {
-      main: ExposeInvoke<MainHandlerType>
-    }
+    listener: ExposeListeners<ICommonListener>
+    invoke: ExposeInvokes<ICommonHandler>
   }
 }
 ```
 
 ```typescript
 // App.vue
-function send() {
-  window.api.main.getName()
-    .then((data) => {
-      console.log(data)
-    })
-}
-
-const mainListener = window.createListener<MainSender>()
-
-mainListener('sum', (a, b) => {
-  console.log(a + b)
+const removeListener = window.listener.tell((e) => {
+  console.log(e)
 })
+
+function send() {
+  window.invoke.minimize()
+}
 ```

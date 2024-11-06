@@ -1,11 +1,19 @@
+import type { ICommonHandler } from '../commons/tipc/common'
 import { join } from 'node:path'
 import process from 'node:process'
 import { is } from '@electron-toolkit/utils'
 import { app, BrowserWindow } from 'electron'
-import { createSender, initTIPC, registerHandler } from 'tipc'
+import { defineHandler } from 'tipc'
+import { createSender, initTIPC, registerHandler } from 'tipc/main'
+
 import icon from '../../resources/icon.png?asset'
-import { CommonListenerMethods } from '../commons/listener/commonListener'
-import { CommonHandler } from './handler'
+import { CommonListenerProps } from '../commons/tipc/common'
+
+export const commonHandler = defineHandler<ICommonHandler>({
+  minimize(req) {
+    req.win.minimize()
+  },
+})
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -21,9 +29,11 @@ function createWindow() {
     },
   })
 
-  registerHandler(win, new CommonHandler())
+  registerHandler(win, commonHandler)
 
-  const sender = createSender(win, CommonListenerMethods)
+  const sender = createSender(win, CommonListenerProps)
+
+  sender.tell('hello!')
 
   if (is.dev && process.env.ELECTRON_RENDERER_URL) {
     win.loadURL(process.env.ELECTRON_RENDERER_URL)
@@ -32,16 +42,11 @@ function createWindow() {
     win.loadFile(join(__dirname, '../renderer/index.html'))
   }
 
-  const timer = setInterval(() => sender.tell('hello!'), 1000)
-
-  win.once('closed', () => clearInterval(timer))
-
   return win
 }
 
 app.whenReady().then(() => {
   initTIPC()
-  createWindow()
   createWindow()
 })
 

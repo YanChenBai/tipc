@@ -1,57 +1,13 @@
-import type { Func, Obj, ObjectToHandler, Req } from './type'
-import { BrowserWindow, ipcMain } from 'electron'
-import { formatChannelName, GET_WIN_ID_CHANNEL, INVOKE_CHANNEL } from './common'
+import type { ConvertToHandlers, Obj, Req } from './type'
 
-// 在主进程中注册 IPC 处理程序
-export function registerHandler(win: BrowserWindow, handlers: Obj) {
-  const channel = formatChannelName(win.id, INVOKE_CHANNEL)
+export { Method } from './common'
 
-  ipcMain.handle(channel, async (event, method: string, ...args: any[]) => {
-    const func = handlers[method]
-
-    try {
-      if (!func)
-        throw new Error(`${channel} channel: method ${method} not found.`)
-
-      if (typeof func !== 'function')
-        throw new Error(`${channel} channel: method ${method} is not a function.`)
-
-      const win = BrowserWindow.getAllWindows().find(i => i.id === event.sender.id)
-
-      const result = await Promise.resolve(func({ event, win }, ...args))
-
-      return result
-    }
-    catch (error) {
-      console.error(String(error))
-    }
-  })
-
-  win.on('closed', () => ipcMain.removeHandler(channel))
-
-  return channel
-}
-
-// 创建发送 IPC 消息的函数
-export function createSender<T extends Obj>(win: BrowserWindow, props: T): T {
-  const initial = {} as T
-  return Object.keys(props).reduce((acc, methodName) => {
-    const method = props[methodName]
-    if (typeof method === 'function') {
-      (acc as any)[methodName] = (...args: any[]) =>
-        win.webContents.send(formatChannelName(win.id, methodName), ...args)
-    }
-    return acc
-  }, initial)
-}
-
-export function initTIPC() {
-  ipcMain.on(GET_WIN_ID_CHANNEL, event => event.returnValue = event.sender.id)
-}
-
-// 用于创建Handler时辅助类型推断的工具函数
-export function defineHandler<T extends Obj, R = ObjectToHandler<T>>(handler: R | (() => R)) {
+/**  用于创建Handler时辅助类型推断的工具函数 */
+export function defineHandler<T extends Obj, R = ConvertToHandlers<T>>(handler: R | (() => R)) {
   return typeof handler === 'function' ? (handler as () => T)() : handler
 }
 
-export { Func, Obj, ObjectToHandler, Req }
+export {
+  ConvertToHandlers,
+  Req,
+}

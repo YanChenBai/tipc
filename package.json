@@ -12,6 +12,11 @@
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
     },
+    "./main": {
+      "dev": "./src/main.ts",
+      "import": "./dist/main.js",
+      "require": "./dist/main.cjs"
+    },
     "./preload": {
       "dev": "./src/preload.ts",
       "import": "./dist/preload.js",
@@ -29,6 +34,10 @@
       ".": [
         "./dist/index.d.ts",
         "./dist/index.d.cts"
+      ],
+      "main": [
+        "./dist/main.d.ts",
+        "./dist/main.d.cts"
       ],
       "preload": [
         "./dist/preload.d.ts",

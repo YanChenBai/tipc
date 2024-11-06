@@ -7,9 +7,9 @@ export default defineConfig({
   tsconfig: './tsconfig.node.json',
   entry: {
     index: 'src/index.ts',
+    main: 'src/main.ts',
     preload: 'src/preload.ts',
     renderer: 'src/renderer.ts',
-    common: 'src/common.ts',
   },
   external: ['electron'],
   format: ['cjs', 'esm'],

@@ -4,4 +4,4 @@ export function formatChannelName(id: number, name: string) {
   return `TIPC:ID[${id}]:NAME[${name}]`
 }
 
-export const TIpcFunc = Function as any
+export const Method = Object

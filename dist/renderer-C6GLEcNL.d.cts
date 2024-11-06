@@ -16,15 +16,15 @@ type OmitInvokeEvent<T> = {
 type OmitNonFunc<T> = {
     [K in keyof T as T[K] extends Func ? K : never]: T[K];
 };
-type GetExposeInvoke<T extends Obj> = {
+type GetExposeInvokes<T extends Obj> = {
     [K in keyof T]: (...args: Parameters<T[K]>) => ReturnType<T[K]> extends Promise<any> ? ReturnType<T[K]> : Promise<ReturnType<T[K]>>;
 };
-type ExposeInvoke<T extends Obj> = GetExposeInvoke<OmitInvokeEvent<OmitNonFunc<T>>>;
-type ExposeListener<T extends Obj> = OmitNonFunc<{
+type ExposeInvokes<T extends Obj> = GetExposeInvokes<OmitInvokeEvent<OmitNonFunc<T>>>;
+type ExposeListeners<T extends Obj> = OmitNonFunc<{
     [K in keyof T]: (callback: (...args: Parameters<T[K]>) => void) => () => void;
 }>;
-type ObjectToHandler<T extends Obj> = OmitNonFunc<{
+type ConvertToHandlers<T extends Obj> = OmitNonFunc<{
     [K in keyof T]: (req: Req, ...args: Parameters<T[K]>) => ReturnType<T[K]>;
 }>;
 
-export type { ExposeInvoke as E, Func as F, Obj as O, Req as R, ExposeListener as a, ObjectToHandler as b };
+export type { ConvertToHandlers as C, ExposeInvokes as E, Obj as O, Req as R, ExposeListeners as a };

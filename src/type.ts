@@ -2,7 +2,10 @@ import type { BrowserWindow, IpcMainInvokeEvent } from 'electron'
 
 export type Func = (...args: any[]) => any
 export type Obj = Record<string, any>
-export interface Req { event: IpcMainInvokeEvent, win: BrowserWindow }
+export interface Req {
+  event: IpcMainInvokeEvent
+  win: BrowserWindow
+}
 
 /** 忽略函数的第一参数  */
 type OmitFirstParam<F, T> = F extends (arg1: infer Q, ...args: infer P) => infer R
@@ -23,18 +26,20 @@ type OmitNonFunc<T> = {
   [K in keyof T as T[K] extends Func ? K : never]: T[K]
 }
 
-type GetExposeInvoke<T extends Obj> = {
-  [K in keyof T]: (...args: Parameters<T[K]>) => ReturnType<T[K]> extends Promise<any> ? ReturnType<T[K]> : Promise<ReturnType<T[K]>>
+type GetExposeInvokes<T extends Obj> = {
+  [K in keyof T]: (...args: Parameters<T[K]>) => ReturnType<T[K]> extends Promise<any>
+    ? ReturnType<T[K]>
+    : Promise<ReturnType<T[K]>>
 }
 
 // 获取主进程暴露的方法类型
-export type ExposeInvoke<T extends Obj> = GetExposeInvoke<OmitInvokeEvent<OmitNonFunc<T>>>
+export type ExposeInvokes<T extends Obj> = GetExposeInvokes<OmitInvokeEvent<OmitNonFunc<T>>>
 
 // 获取渲染进程监听器的类型
-export type ExposeListener<T extends Obj> = OmitNonFunc<{
+export type ExposeListeners<T extends Obj> = OmitNonFunc<{
   [K in keyof T]: (callback: (...args: Parameters<T[K]>) => void) => () => void
 }>
 
-export type ObjectToHandler<T extends Obj> = OmitNonFunc<{
+export type ConvertToHandlers<T extends Obj> = OmitNonFunc<{
   [K in keyof T]: (req: Req, ...args: Parameters<T[K]>) => ReturnType<T[K]>
 }>

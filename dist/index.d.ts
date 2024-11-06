@@ -1,10 +1,10 @@
-import { O as Obj, b as ObjectToHandler } from './type-D4HQs_F_.js';
-export { F as Func, R as Req } from './type-D4HQs_F_.js';
-import { BrowserWindow } from 'electron';
+import { O as Obj, C as ConvertToHandlers } from './renderer-C6GLEcNL.js';
+export { R as Req } from './renderer-C6GLEcNL.js';
+import 'electron';
 
-declare function registerHandler(win: BrowserWindow, handlers: Obj): string;
-declare function createSender<T extends Obj>(win: BrowserWindow, props: T): T;
-declare function initTIPC(): void;
-declare function defineHandler<T extends Obj, R = ObjectToHandler<T>>(handler: R | (() => R)): T | R;
+declare const Method: ObjectConstructor;
 
-export { Obj, ObjectToHandler, createSender, defineHandler, initTIPC, registerHandler };
+/**  用于创建Handler时辅助类型推断的工具函数 */
+declare function defineHandler<T extends Obj, R = ConvertToHandlers<T>>(handler: R | (() => R)): T | R;
+
+export { ConvertToHandlers, Method, defineHandler };
