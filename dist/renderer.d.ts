@@ -1,3 +1,3 @@
 export { TIpcFunc } from './common.js';
-export { E as ExposeInvoke, a as ExposeListener } from './type-f_EitbQS.js';
+export { E as ExposeInvoke, a as ExposeListener } from './type-CqIQC4Q3.js';
 import 'electron';

@@ -27,7 +27,7 @@ type GetExposeInvoke<T extends Obj> =
 <K extends keyof T = keyof T, R = ReturnType<T[K]>>(method: K, ...args: Parameters<T[K]>) => R extends Promise<any> ? R : Promise<R>
 
 // 获取主进程暴露的方法类型
-export type ExposeInvoke = <T extends Obj>() => GetExposeInvoke<OmitInvokeEvent<OmitNonFunc<T>>>
+export type ExposeInvoke<T extends Obj> = GetExposeInvoke<OmitInvokeEvent<OmitNonFunc<T>>>
 
 // 获取渲染进程监听器的类型
 export type ExposeListener<T extends Obj> = OmitNonFunc<{

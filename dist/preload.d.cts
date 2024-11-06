@@ -1,4 +1,4 @@
-import { O as Obj } from './type-f_EitbQS.cjs';
+import { O as Obj } from './type-CqIQC4Q3.cjs';
 export { TIpcFunc } from './common.cjs';
 import 'electron';
 

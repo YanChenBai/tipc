@@ -17,7 +17,7 @@ type OmitNonFunc<T> = {
     [K in keyof T as T[K] extends Func ? K : never]: T[K];
 };
 type GetExposeInvoke<T extends Obj> = <K extends keyof T = keyof T, R = ReturnType<T[K]>>(method: K, ...args: Parameters<T[K]>) => R extends Promise<any> ? R : Promise<R>;
-type ExposeInvoke = <T extends Obj>() => GetExposeInvoke<OmitInvokeEvent<OmitNonFunc<T>>>;
+type ExposeInvoke<T extends Obj> = GetExposeInvoke<OmitInvokeEvent<OmitNonFunc<T>>>;
 type ExposeListener<T extends Obj> = OmitNonFunc<{
     [K in keyof T]: (callback: (...args: Parameters<T[K]>) => void) => void;
 }>;
