@@ -22,7 +22,7 @@ export function registerHandler(win: BrowserWindow, handler: Obj) {
       if (typeof func !== 'function')
         throw new Error(`${channel} channel: method ${method} is not a function.`)
 
-      const win = BrowserWindow.getAllWindows().find(i => i.id === event.sender.id)
+      const win = BrowserWindow.fromId(event.sender.id)
 
       const result = await Promise.resolve(func({ event, win }, ...args))
 
