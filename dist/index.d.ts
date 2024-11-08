@@ -1,10 +1,14 @@
-import { O as Obj, C as ConvertToHandlers } from './renderer-C6GLEcNL.js';
-export { R as Req } from './renderer-C6GLEcNL.js';
+import { T as TIPCMethods, M as Methods, C as ConvertToHandlers } from './renderer-B6_0b9dR.js';
+export { R as Req } from './renderer-B6_0b9dR.js';
 import 'electron';
 
 declare const Method: ObjectConstructor;
 
-/**  用于创建Handler时辅助类型推断的工具函数 */
-declare function defineHandler<T extends Obj, R = ConvertToHandlers<T>>(handler: R | (() => R)): T | R;
+/**  用于实现Handler时辅助类型推断的工具函数 */
+declare function defineHandler<T extends TIPCMethods, R extends Methods = ConvertToHandlers<T['methods']>>(proto: T, methods: R): TIPCMethods;
+declare function defineProto<T extends Methods>(name: string, methods: T): {
+    name: string;
+    methods: T;
+};
 
-export { ConvertToHandlers, Method, defineHandler };
+export { ConvertToHandlers, Method, defineHandler, defineProto };

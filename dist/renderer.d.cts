@@ -1,2 +1,2 @@
-export { E as ExposeInvokes, a as ExposeListeners } from './renderer-C6GLEcNL.cjs';
+export { E as ExposeInvokes, a as ExposeListeners } from './renderer-B6_0b9dR.cjs';
 import 'electron';

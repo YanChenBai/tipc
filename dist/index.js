@@ -1,12 +1,22 @@
 import {
   Method
-} from "./chunk-UW2XBU3W.js";
+} from "./chunk-7BFOR4DM.js";
 
 // src/index.ts
-function defineHandler(handler) {
-  return typeof handler === "function" ? handler() : handler;
+function defineHandler(proto, methods) {
+  return {
+    name: proto.name,
+    methods
+  };
+}
+function defineProto(name, methods) {
+  return {
+    name,
+    methods
+  };
 }
 export {
   Method,
-  defineHandler
+  defineHandler,
+  defineProto
 };

@@ -1,23 +1,18 @@
-import { O as Obj } from './renderer-C6GLEcNL.js';
+import { T as TIPCMethods, M as Methods } from './renderer-B6_0b9dR.js';
 import { BrowserWindow } from 'electron';
 
 /**
  * 注册 handler
- * @param win 窗口实例
- * @param handler handler 对象
  * @returns 取消注册的方法
  */
-declare function registerHandler(win: BrowserWindow, handler: Obj): () => void;
+declare function registerHandler(comply: TIPCMethods): (() => void) | undefined;
 /**
  * 批量注册 handler
- * @param win 窗口对象
- * @param handlers handler 对象数组
+ * @param arr TIPCMethods数组
  * @returns 返回一个取消注册函数数组
  */
-declare function batchRegisterHandlers(win: BrowserWindow, handlers: Obj[]): (() => void)[];
+declare function batchRegisterHandlers(arr: TIPCMethods[]): ((() => void) | undefined)[];
 /** 创建发送 IPC 消息的函数 */
-declare function createSender<T extends Obj>(win: BrowserWindow, props: T): T;
-/** 初始化 TIPC */
-declare function initTIPC(): () => void;
+declare function createSender<T extends Methods>(win: BrowserWindow, proto: TIPCMethods): T;
 
-export { batchRegisterHandlers, createSender, initTIPC, registerHandler };
+export { batchRegisterHandlers, createSender, registerHandler };

@@ -1,10 +1,20 @@
-import type { ConvertToHandlers, Obj, Req } from './type'
+import type { ConvertToHandlers, Methods, Req, TIPCMethods } from './type'
 
 export { Method } from './common'
 
-/**  用于创建Handler时辅助类型推断的工具函数 */
-export function defineHandler<T extends Obj, R = ConvertToHandlers<T>>(handler: R | (() => R)) {
-  return typeof handler === 'function' ? (handler as () => T)() : handler
+/**  用于实现Handler时辅助类型推断的工具函数 */
+export function defineHandler<T extends TIPCMethods, R extends Methods = ConvertToHandlers<T['methods']>>(proto: T, methods: R): TIPCMethods {
+  return {
+    name: proto.name,
+    methods,
+  }
+}
+
+export function defineProto<T extends Methods>(name: string, methods: T) {
+  return {
+    name,
+    methods,
+  }
 }
 
 export {

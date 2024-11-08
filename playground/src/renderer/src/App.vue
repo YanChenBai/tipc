@@ -3,6 +3,9 @@ const remove = window.listener.tell((e) => {
   // eslint-disable-next-line no-console
   console.log(e)
 })
+
+// eslint-disable-next-line no-console
+window.invoke2.getWinId().then(console.log)
 function send() {
   window.invoke.minimize()
   remove()

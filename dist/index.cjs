@@ -1,12 +1,22 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true});
 
-var _chunkT26NH37Fcjs = require('./chunk-T26NH37F.cjs');
+var _chunkJHSIC6LVcjs = require('./chunk-JHSIC6LV.cjs');
 
 // src/index.ts
-function defineHandler(handler) {
-  return typeof handler === "function" ? handler() : handler;
+function defineHandler(proto, methods) {
+  return {
+    name: proto.name,
+    methods
+  };
+}
+function defineProto(name, methods) {
+  return {
+    name,
+    methods
+  };
 }
 
 
 
-exports.Method = _chunkT26NH37Fcjs.Method; exports.defineHandler = defineHandler;
+
+exports.Method = _chunkJHSIC6LVcjs.Method; exports.defineHandler = defineHandler; exports.defineProto = defineProto;

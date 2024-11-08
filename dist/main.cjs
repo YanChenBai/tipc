@@ -2,53 +2,54 @@
 
 
 
-
-var _chunkT26NH37Fcjs = require('./chunk-T26NH37F.cjs');
+var _chunkJHSIC6LVcjs = require('./chunk-JHSIC6LV.cjs');
 
 // src/main.ts
 var _electron = require('electron');
-function registerHandler(win, handler) {
-  const channel = _chunkT26NH37Fcjs.formatChannelName.call(void 0, win.id, _chunkT26NH37Fcjs.INVOKE_CHANNEL);
-  _electron.ipcMain.handle(channel, async (event, method, ...args) => {
-    const func = handler[method];
+var registerList = /* @__PURE__ */ new Set();
+function registerHandler(comply) {
+  const { methods, name } = comply;
+  const channel = _chunkJHSIC6LVcjs.formatChannelName.call(void 0, _chunkJHSIC6LVcjs.INVOKE_CHANNEL, name);
+  if (registerList.has(channel))
+    return;
+  _electron.ipcMain.handle(channel, async (event, methodName, ...args) => {
+    const func = methods[methodName];
     try {
       if (!func)
-        throw new Error(`${channel} channel: method ${method} not found.`);
+        throw new Error(`${channel} channel: method ${methodName} not found.`);
       if (typeof func !== "function")
-        throw new Error(`${channel} channel: method ${method} is not a function.`);
-      const win2 = _electron.BrowserWindow.getAllWindows().find((i) => i.id === event.sender.id);
-      const result = await Promise.resolve(func({ event, win: win2 }, ...args));
+        throw new Error(`${channel} channel: method ${methodName} is not a function.`);
+      const win = _electron.BrowserWindow.fromId(event.sender.id);
+      const result = await Promise.resolve(func({ event, win }, ...args));
       return result;
     } catch (error) {
       console.error(String(error));
     }
   });
-  const remove = () => _electron.ipcMain.removeHandler(channel);
-  win.on("closed", remove);
+  registerList.add(channel);
+  const remove = () => {
+    _electron.ipcMain.removeHandler(channel);
+    registerList.delete(channel);
+  };
+  _electron.app.on("window-all-closed", () => remove());
   return remove;
 }
-function batchRegisterHandlers(win, handlers) {
-  return handlers.map((handler) => registerHandler(win, handler));
+function batchRegisterHandlers(arr) {
+  return arr.map((item) => registerHandler(item));
 }
-function createSender(win, props) {
+function createSender(win, proto) {
   const initial = {};
-  return Object.keys(props).reduce((acc, method) => {
-    if (props[method] !== _chunkT26NH37Fcjs.Method)
+  const { name, methods } = proto;
+  Object.keys(methods).reduce((acc, methodName) => {
+    if (methods[methodName] !== _chunkJHSIC6LVcjs.Method)
       return acc;
-    acc[method] = (...args) => win.webContents.send(_chunkT26NH37Fcjs.formatChannelName.call(void 0, win.id, method), ...args);
+    acc[methodName] = (...args) => win.webContents.send(_chunkJHSIC6LVcjs.formatChannelName.call(void 0, name, methodName), ...args);
     return acc;
   }, initial);
-}
-function initTIPC() {
-  const listener = (event) => event.returnValue = event.sender.id;
-  _electron.ipcMain.on(_chunkT26NH37Fcjs.GET_WIN_ID_CHANNEL, listener);
-  return () => {
-    _electron.ipcMain.removeListener(_chunkT26NH37Fcjs.GET_WIN_ID_CHANNEL, listener);
-  };
+  return initial;
 }
 
 
 
 
-
-exports.batchRegisterHandlers = batchRegisterHandlers; exports.createSender = createSender; exports.initTIPC = initTIPC; exports.registerHandler = registerHandler;
+exports.batchRegisterHandlers = batchRegisterHandlers; exports.createSender = createSender; exports.registerHandler = registerHandler;

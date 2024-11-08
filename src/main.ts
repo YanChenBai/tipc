@@ -1,26 +1,30 @@
-import type { IpcMainEvent } from 'electron'
-import type { Obj } from './type'
-import { BrowserWindow, ipcMain } from 'electron'
-import { formatChannelName, GET_WIN_ID_CHANNEL, INVOKE_CHANNEL, Method } from './common'
+import type { Methods, TIPCMethods } from './type'
+import { app, BrowserWindow, ipcMain } from 'electron'
+import { formatChannelName, INVOKE_CHANNEL, Method } from './common'
+
+const registerList = new Set<string>()
 
 /**
  * 注册 handler
- * @param win 窗口实例
- * @param handler handler 对象
  * @returns 取消注册的方法
  */
-export function registerHandler(win: BrowserWindow, handler: Obj) {
-  const channel = formatChannelName(win.id, INVOKE_CHANNEL)
+export function registerHandler(comply: TIPCMethods) {
+  const { methods, name } = comply
+  const channel = formatChannelName(INVOKE_CHANNEL, name)
 
-  ipcMain.handle(channel, async (event, method: string, ...args: any[]) => {
-    const func = handler[method]
+  /** 避免重复注册 */
+  if (registerList.has(channel))
+    return
+
+  ipcMain.handle(channel, async (event, methodName: string, ...args: any[]) => {
+    const func = methods[methodName]
 
     try {
       if (!func)
-        throw new Error(`${channel} channel: method ${method} not found.`)
+        throw new Error(`${channel} channel: method ${methodName} not found.`)
 
       if (typeof func !== 'function')
-        throw new Error(`${channel} channel: method ${method} is not a function.`)
+        throw new Error(`${channel} channel: method ${methodName} is not a function.`)
 
       const win = BrowserWindow.fromId(event.sender.id)
 
@@ -33,44 +37,41 @@ export function registerHandler(win: BrowserWindow, handler: Obj) {
     }
   })
 
-  const remove = () => ipcMain.removeHandler(channel)
+  registerList.add(channel)
 
-  win.on('closed', remove)
+  const remove = () => {
+    ipcMain.removeHandler(channel)
+    registerList.delete(channel)
+  }
+
+  app.on('window-all-closed', () => remove())
 
   return remove
 }
 
 /**
  * 批量注册 handler
- * @param win 窗口对象
- * @param handlers handler 对象数组
+ * @param arr TIPCMethods数组
  * @returns 返回一个取消注册函数数组
  */
-export function batchRegisterHandlers(win: BrowserWindow, handlers: Obj[]) {
-  return handlers.map(handler => registerHandler(win, handler))
+export function batchRegisterHandlers(arr: TIPCMethods[]) {
+  return arr.map(item => registerHandler(item))
 }
 
 /** 创建发送 IPC 消息的函数 */
-export function createSender<T extends Obj>(win: BrowserWindow, props: T): T {
+export function createSender<T extends Methods>(win: BrowserWindow, proto: TIPCMethods): T {
   const initial = {} as T
+  const { name, methods } = proto
 
-  return Object.keys(props).reduce((acc, method) => {
-    if (props[method] !== Method)
+  Object.keys(methods).reduce((acc, methodName) => {
+    if (methods[methodName] !== Method)
       return acc;
 
-    (acc as any)[method] = (...args: any[]) =>
-      win.webContents.send(formatChannelName(win.id, method), ...args)
+    (acc as any)[methodName] = (...args: any[]) =>
+      win.webContents.send(formatChannelName(name, methodName), ...args)
 
     return acc
   }, initial)
-}
 
-/** 初始化 TIPC */
-export function initTIPC() {
-  const listener = (event: IpcMainEvent) => event.returnValue = event.sender.id
-  ipcMain.on(GET_WIN_ID_CHANNEL, listener)
-
-  return () => {
-    ipcMain.removeListener(GET_WIN_ID_CHANNEL, listener)
-  }
+  return initial
 }

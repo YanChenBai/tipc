@@ -1,17 +1,22 @@
-import type { ICommonHandler } from '../commons/tipc/common'
 import { join } from 'node:path'
 import process from 'node:process'
 import { is } from '@electron-toolkit/utils'
 import { app, BrowserWindow } from 'electron'
 import { defineHandler } from 'tipc'
-import { createSender, initTIPC, registerHandler } from 'tipc/main'
+import { createSender, registerHandler } from 'tipc/main'
 
 import icon from '../../resources/icon.png?asset'
-import { CommonListenerProps } from '../commons/tipc/common'
+import { Common2HandlerMethods, CommonHandlerMethods, CommonListenerMethods } from '../commons/tipc/common'
 
-export const commonHandler = defineHandler<ICommonHandler>({
+export const commonHandler = defineHandler(CommonHandlerMethods, {
   minimize(req) {
     req.win.minimize()
+  },
+})
+
+export const common2Handler = defineHandler(Common2HandlerMethods, {
+  getWinId(req) {
+    return req.win.id
   },
 })
 
@@ -29,9 +34,10 @@ function createWindow() {
     },
   })
 
-  registerHandler(win, commonHandler)
+  registerHandler(commonHandler)
+  registerHandler(common2Handler)
 
-  const sender = createSender(win, CommonListenerProps)
+  const sender = createSender(win, CommonListenerMethods)
 
   sender.tell('hello!')
 
@@ -46,7 +52,7 @@ function createWindow() {
 }
 
 app.whenReady().then(() => {
-  initTIPC()
+  createWindow()
   createWindow()
 })
 
