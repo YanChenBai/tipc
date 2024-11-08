@@ -1,4 +1,4 @@
-import type { Methods, TIPCMethods } from './type'
+import type { TIPCMethods } from './type'
 import { app, BrowserWindow, ipcMain } from 'electron'
 import { formatChannelName, INVOKE_CHANNEL, Method } from './common'
 
@@ -59,8 +59,8 @@ export function batchRegisterHandlers(arr: TIPCMethods[]) {
 }
 
 /** 创建发送 IPC 消息的函数 */
-export function createSender<T extends Methods>(win: BrowserWindow, proto: TIPCMethods): T {
-  const initial = {} as T
+export function createSender<T extends TIPCMethods>(win: BrowserWindow, proto: T): T['methods'] {
+  const initial = {} as T['methods']
   const { name, methods } = proto
 
   Object.keys(methods).reduce((acc, methodName) => {

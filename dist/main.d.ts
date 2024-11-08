@@ -1,4 +1,4 @@
-import { T as TIPCMethods, M as Methods } from './renderer-B6_0b9dR.js';
+import { T as TIPCMethods } from './renderer-B6_0b9dR.js';
 import { BrowserWindow } from 'electron';
 
 /**
@@ -13,6 +13,6 @@ declare function registerHandler(comply: TIPCMethods): (() => void) | undefined;
  */
 declare function batchRegisterHandlers(arr: TIPCMethods[]): ((() => void) | undefined)[];
 /** 创建发送 IPC 消息的函数 */
-declare function createSender<T extends Methods>(win: BrowserWindow, proto: TIPCMethods): T;
+declare function createSender<T extends TIPCMethods>(win: BrowserWindow, proto: T): T['methods'];
 
 export { batchRegisterHandlers, createSender, registerHandler };
