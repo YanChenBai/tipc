@@ -23,7 +23,8 @@ function createWindow() {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false,
       nodeIntegration: false,
-      contextIsolation: true,
+      // contextIsolation: false,
+      devTools: true,
     },
   })
 
@@ -31,7 +32,7 @@ function createWindow() {
 
   const sender = createSender(win, CommonListenerProto)
 
-  sender.tell('hello!')
+  setInterval(() => sender.tell('hello!'), 1000)
 
   win.loadURL(process.env.ELECTRON_RENDERER_URL ?? '')
 

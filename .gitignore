@@ -28,3 +28,4 @@ coverage
 *.tsbuildinfo
 /playground/out/
 /playground/build/
+/dist/

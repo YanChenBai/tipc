@@ -53,11 +53,12 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsup",
-    "lint": "eslint .",
-    "lint:fix": "npx nr lint --fix",
     "prepare": "husky || true",
-    "play": "npx nr --filter ./playground dev",
+    "lint": "eslint .",
+    "lint:fix": "pnpm lint --fix",
+    "dev": "run-p build play",
+    "play": "pnpm --filter ./playground dev",
+    "build": "tsup",
     "test": "vitest",
     "coverage": "vitest run --coverage"
   },

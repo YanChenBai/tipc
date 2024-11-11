@@ -9,5 +9,11 @@
     "types": ["electron-vite/node"],
     "strict": true
   },
-  "include": ["electron.vite.config.*", "src/main/**/*", "src/preload/**/*", "../src/*", "src/commons/**/*"]
+  "include": [
+    "electron.vite.config.*",
+    "src/main/**/*",
+    "src/preload/**/*",
+    "../src/*",
+    "src/commons/**/*"
+  ]
 }

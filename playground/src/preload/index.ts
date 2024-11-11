@@ -1,6 +1,6 @@
-import { exposeInvoke, exposeListener } from '@byc/tipc/preload'
+import { exposeInvokes, exposeListeners } from '@byc/tipc/preload'
 import { contextBridge } from 'electron'
 import { CommonHandlerProto, CommonListenerProto } from '../commons/tipc/common'
 
-contextBridge.exposeInMainWorld('invoke', exposeInvoke(CommonHandlerProto))
-contextBridge.exposeInMainWorld('listener', exposeListener(CommonListenerProto))
+contextBridge.exposeInMainWorld('invoke', exposeInvokes(CommonHandlerProto))
+contextBridge.exposeInMainWorld('listener', exposeListeners(CommonListenerProto))
