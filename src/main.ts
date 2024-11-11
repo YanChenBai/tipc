@@ -1,8 +1,8 @@
 import type { TIPCMethods } from './type'
 import { app, BrowserWindow, ipcMain } from 'electron'
-import { formatChannelName, INVOKE_CHANNEL, Method } from './common'
+import { geListenerName, getHandlerName, Method } from './common'
 
-const registerList = new Set<string>()
+export const registerList = new Map<string, () => void>()
 
 /**
  * 注册 handler
@@ -10,11 +10,11 @@ const registerList = new Set<string>()
  */
 export function registerHandler(comply: TIPCMethods) {
   const { methods, name } = comply
-  const channel = formatChannelName(INVOKE_CHANNEL, name)
+  const channel = getHandlerName(name)
 
   /** 避免重复注册 */
   if (registerList.has(channel))
-    return
+    return registerList.get(channel)!
 
   ipcMain.handle(channel, async (event, methodName: string, ...args: any[]) => {
     const func = methods[methodName]
@@ -33,16 +33,16 @@ export function registerHandler(comply: TIPCMethods) {
       return result
     }
     catch (error) {
-      console.error(String(error))
+      return Promise.reject(error)
     }
   })
-
-  registerList.add(channel)
 
   const remove = () => {
     ipcMain.removeHandler(channel)
     registerList.delete(channel)
   }
+
+  registerList.set(channel, remove)
 
   app.on('window-all-closed', () => remove())
 
@@ -68,7 +68,7 @@ export function createSender<T extends TIPCMethods>(win: BrowserWindow, proto: T
       return acc;
 
     (acc as any)[methodName] = (...args: any[]) =>
-      win.webContents.send(formatChannelName(name, methodName), ...args)
+      win.webContents.send(geListenerName(name, methodName), ...args)
 
     return acc
   }, initial)

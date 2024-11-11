@@ -13,11 +13,11 @@ export interface TIPCMethods {
 }
 
 /** 忽略函数的第一参数  */
-type OmitFirstParam<F, T> = F extends (arg1: infer Q, ...args: infer P) => infer R
-  ? Q extends T
-    ? (...args: P) => R
-    : F
-  : F
+ type OmitFirstParam<F, T> = F extends (arg1: infer Q, ...args: infer P) => infer R
+   ? Q extends T
+     ? (...args: P) => R
+     : F
+   : F
 
 /** 排除函数的 Invoke Event 参数 */
 type OmitInvokeEvent<T extends Methods> = {
