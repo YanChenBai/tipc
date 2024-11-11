@@ -21,6 +21,7 @@ export const CommonListenerProto = defineProto('CommonListener', {
   tell: Method as (msg: string) => void,
 })
 
+// type
 export type ICommonHandler = typeof CommonHandlerProto
 export type ICommonListener = typeof CommonListenerProto
 ```
@@ -52,10 +53,13 @@ function createWindow() {
     },
   })
 
+  // register handler
   registerHandler(commonHandler)
 
+  // create sender
   const sender = createSender(win, CommonListenerProto)
 
+  // send message
   setInterval(() => sender.tell('hello!'), 1000)
 
   win.loadURL(process.env.ELECTRON_RENDERER_URL ?? '')
@@ -75,16 +79,19 @@ app.on('window-all-closed', () => app.quit())
 import { exposeInvokes, exposeListeners } from '@byc/tipc/preload'
 import { contextBridge } from 'electron'
 
+// expose invoke and listener
 contextBridge.exposeInMainWorld('invoke', exposeInvokes(CommonHandlerProto))
 contextBridge.exposeInMainWorld('listener', exposeListeners(CommonListenerProto))
 ```
 
 #### Renderer Process
 ```typescript
+// listen message
 window.listener.tell((msg) => {
   console.log(msg)
 })
 
+// invoke handler
 function minimize() {
   window.invoke.minimize()
 }
