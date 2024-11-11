@@ -8,6 +8,7 @@ vi.mock('electron', () => ({
   ipcRenderer: {
     on: vi.fn(),
     invoke: vi.fn(),
+    removeListener: vi.fn(),
   },
 }))
 
@@ -39,7 +40,7 @@ describe('exposeListeners', () => {
   const listeners = exposeListeners(TestProto)
 
   it('should expose listeners', () => {
-    listeners.testMethod1(() => {})
+    const remove = listeners.testMethod1(() => {})
 
     listeners.testMethod2(() => {})
 
@@ -50,6 +51,12 @@ describe('exposeListeners', () => {
 
     expect(ipcRenderer.on).toHaveBeenCalledWith(
       geListenerName(LISTENER_NAME_BASE, 'testMethod2'),
+      expect.any(Function),
+    )
+
+    remove()
+    expect(ipcRenderer.removeListener).toHaveBeenCalledWith(
+      geListenerName(LISTENER_NAME_BASE, 'testMethod1'),
       expect.any(Function),
     )
   })

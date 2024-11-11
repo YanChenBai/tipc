@@ -1,5 +1,5 @@
 import { BrowserWindow } from 'electron'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { defineProto } from '../'
 import { geListenerName, Method } from '../common'
 import { createSender } from '../main'
@@ -22,15 +22,19 @@ const TestProto = defineProto(LISTENER_NAME_BASE, {
 const mockWin = new (vi.mocked(BrowserWindow))()
 
 describe('createSender.test', () => {
-  let sender: typeof TestProto.methods
+  // 模拟非Method属性
+  const NotFuncMethodName = 'testMethod3'
+  TestProto.methods[NotFuncMethodName] = 'not a method'
 
-  beforeEach(() => {
-    sender = createSender(mockWin, TestProto)
-  })
+  const sender = createSender(mockWin, TestProto)
 
   it('should return an object with the same methods as proto.methods', () => {
     expect(sender).toHaveProperty('testMethod1')
     expect(sender).toHaveProperty('testMethod2')
+  })
+
+  it('should handle methods that are not of type Method', () => {
+    expect(() => (sender as any)[NotFuncMethodName](1)).toThrow()
   })
 
   it('should call win.webContents.send with the correct arguments', () => {
