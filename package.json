@@ -60,7 +60,8 @@
     "play": "pnpm --filter ./playground dev",
     "build": "tsup",
     "test": "vitest",
-    "coverage": "vitest run --coverage"
+    "coverage": "vitest run --coverage",
+    "publish": "pnpm build & pnpm publish"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^3.8.0",
