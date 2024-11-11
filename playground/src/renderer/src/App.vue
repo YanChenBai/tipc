@@ -1,14 +1,11 @@
 <script setup lang="ts">
-const remove = window.listener.tell((e) => {
+window.listener.tell((e) => {
   // eslint-disable-next-line no-console
   console.log(e)
 })
 
-// eslint-disable-next-line no-console
-window.invoke2.getWinId().then(console.log)
-function send() {
+function minimize() {
   window.invoke.minimize()
-  remove()
 }
 </script>
 
@@ -31,7 +28,7 @@ function send() {
       <a href="https://electron-vite.org/" target="_blank" rel="noreferrer">Documentation</a>
     </div>
     <div class="action">
-      <a target="_blank" rel="noreferrer" @click="send">Send IPC</a>
+      <a target="_blank" rel="noreferrer" @click="minimize">Minimize</a>
     </div>
   </div>
 </template>

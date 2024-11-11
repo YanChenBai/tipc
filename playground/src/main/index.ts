@@ -1,22 +1,15 @@
 import { join } from 'node:path'
 import process from 'node:process'
-import { is } from '@electron-toolkit/utils'
+import { defineHandler } from '@byc/tipc'
+import { createSender, registerHandler } from '@byc/tipc/main'
 import { app, BrowserWindow } from 'electron'
-import { defineHandler } from 'tipc'
-import { createSender, registerHandler } from 'tipc/main'
 
 import icon from '../../resources/icon.png?asset'
-import { Common2HandlerMethods, CommonHandlerMethods, CommonListenerMethods } from '../commons/tipc/common'
+import { CommonHandlerProto, CommonListenerProto } from '../commons/tipc/common'
 
-export const commonHandler = defineHandler(CommonHandlerMethods, {
+export const commonHandler = defineHandler(CommonHandlerProto, {
   minimize(req) {
     req.win.minimize()
-  },
-})
-
-export const common2Handler = defineHandler(Common2HandlerMethods, {
-  getWinId(req) {
-    return req.win.id
   },
 })
 
@@ -25,7 +18,7 @@ function createWindow() {
     width: 900,
     height: 670,
     autoHideMenuBar: true,
-    ...(process.platform === 'linux' ? { icon } : {}),
+    icon,
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false,
@@ -35,24 +28,17 @@ function createWindow() {
   })
 
   registerHandler(commonHandler)
-  registerHandler(common2Handler)
 
-  const sender = createSender(win, CommonListenerMethods)
+  const sender = createSender(win, CommonListenerProto)
 
   sender.tell('hello!')
 
-  if (is.dev && process.env.ELECTRON_RENDERER_URL) {
-    win.loadURL(process.env.ELECTRON_RENDERER_URL)
-  }
-  else {
-    win.loadFile(join(__dirname, '../renderer/index.html'))
-  }
+  win.loadURL(process.env.ELECTRON_RENDERER_URL ?? '')
 
   return win
 }
 
 app.whenReady().then(() => {
-  createWindow()
   createWindow()
 })
 

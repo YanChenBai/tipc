@@ -1,17 +1,12 @@
-import { defineProto, Method } from 'tipc'
+import { defineProto, Method } from '@byc/tipc'
 
-export const CommonHandlerMethods = defineProto('common', {
+export const CommonHandlerProto = defineProto('CommonHandler', {
   minimize: Method as () => void,
 })
 
-export const Common2HandlerMethods = defineProto('common2', {
-  getWinId: Method as () => number,
-})
-
-export const CommonListenerMethods = defineProto('common', {
+export const CommonListenerProto = defineProto('CommonListener', {
   tell: Method as (msg: string) => void,
 })
 
-export type ICommonHandler = typeof CommonHandlerMethods
-export type ICommon2Handler = typeof Common2HandlerMethods
-export type ICommonListener = typeof CommonListenerMethods
+export type ICommonHandler = typeof CommonHandlerProto
+export type ICommonListener = typeof CommonListenerProto

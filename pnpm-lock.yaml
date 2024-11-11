@@ -41,6 +41,9 @@ importers:
 
   playground:
     dependencies:
+      '@byc/tipc':
+        specifier: workspace:*
+        version: link:..
       '@electron-toolkit/preload':
         specifier: ^3.0.1
         version: 3.0.1(electron@31.7.3)
@@ -50,9 +53,6 @@ importers:
       '@faker-js/faker':
         specifier: ^9.2.0
         version: 9.2.0
-      tipc:
-        specifier: workspace:*
-        version: link:..
     devDependencies:
       '@electron-toolkit/eslint-config':
         specifier: ^1.0.2
@@ -5349,7 +5349,7 @@ snapshots:
 
   '@unocss/eslint-plugin@0.62.3(eslint@9.14.0(jiti@1.21.6))(typescript@5.6.3)':
     dependencies:
-      '@typescript-eslint/utils': 8.12.2(eslint@9.14.0(jiti@1.21.6))(typescript@5.6.3)
+      '@typescript-eslint/utils': 8.13.0(eslint@9.14.0(jiti@1.21.6))(typescript@5.6.3)
       '@unocss/config': 0.62.3
       '@unocss/core': 0.62.3
       magic-string: 0.30.11
