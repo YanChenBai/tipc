@@ -1,8 +1,9 @@
+import type { IpcMainInvokeEvent } from 'electron'
 import type { TIPCMethods } from './type'
 import { app, BrowserWindow, ipcMain } from 'electron'
 import { geListenerName, getHandlerName, Method } from './common'
 
-export const registerList = new Map<string, () => void>()
+export const deregisterMap = new Map<string, () => void>()
 
 /**
  * 注册 handler
@@ -12,41 +13,47 @@ export function registerHandler(comply: TIPCMethods) {
   const { methods, name } = comply
   const channel = getHandlerName(name)
 
-  /** 避免重复注册 */
-  if (registerList.has(channel))
-    return registerList.get(channel)!
+  // 避免重复注册
+  if (deregisterMap.has(channel))
+    return deregisterMap.get(channel)!
 
-  ipcMain.handle(channel, async (event, methodName: string, ...args: any[]) => {
-    const func = methods[methodName]
+  async function handler(event: IpcMainInvokeEvent, methodName: string, ...args: any[]) {
+    const method = methods[methodName]
+
+    if (!method)
+      throw new Error(`[${channel}] Method '${methodName}' not registered`)
+
+    if (typeof method !== 'function')
+      throw new Error(`${channel} channel: method ${methodName} is not a function.`)
+
+    const win = BrowserWindow.fromId(event.sender.id)
+    const context = { event, win }
 
     try {
-      if (!func)
-        throw new Error(`${channel} channel: method ${methodName} not found.`)
-
-      if (typeof func !== 'function')
-        throw new Error(`${channel} channel: method ${methodName} is not a function.`)
-
-      const win = BrowserWindow.fromId(event.sender.id)
-
-      const result = await Promise.resolve(func({ event, win }, ...args))
-
-      return result
+      return await Promise.resolve(method(context, ...args))
     }
     catch (error) {
-      return Promise.reject(error)
+      console.error(`[${channel}] Error in ${methodName}:`, error)
+      throw error
     }
-  })
-
-  const remove = () => {
-    ipcMain.removeHandler(channel)
-    registerList.delete(channel)
   }
 
-  registerList.set(channel, remove)
+  ipcMain.handle(channel, handler)
 
-  app.on('window-all-closed', () => remove())
+  // 清理函数
+  const deregister = () => {
+    ipcMain.removeHandler(channel)
+    deregisterMap.delete(channel)
+    app.off('window-all-closed', deregister)
+  }
 
-  return remove
+  // 保存清理方法
+  deregisterMap.set(channel, deregister)
+
+  // 窗口全部关闭时自动清理
+  app.on('window-all-closed', deregister)
+
+  return deregister
 }
 
 /**

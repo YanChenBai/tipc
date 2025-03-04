@@ -33,7 +33,6 @@ export function exposeListeners<T extends TIPCMethods, M = ExposeListeners<T>>(p
         }
       }
     }
-
     return acc
   }, {} as M)
 }

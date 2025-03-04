@@ -3,7 +3,7 @@ import { app, ipcMain } from 'electron'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { defineHandler, defineProto, Method } from '../'
 import { getHandlerName } from '../common'
-import { batchRegisterHandlers, registerHandler, registerList } from '../main'
+import { batchRegisterHandlers, deregisterMap, registerHandler } from '../main'
 
 vi.mock('electron', () => ({
   ipcMain: {
@@ -15,6 +15,7 @@ vi.mock('electron', () => ({
   },
   app: {
     on: vi.fn(),
+    off: vi.fn(),
   },
 }))
 
@@ -74,7 +75,7 @@ describe('registerHandler', () => {
     await expect(handler(mockEvent, NAME))
       .rejects
       .toThrow(
-        `${CHANNEL_FULL_NAME} channel: method ${NAME} not found`,
+        `[${CHANNEL_FULL_NAME}] Method '${NAME}' not registered`,
       )
   })
 
@@ -100,17 +101,17 @@ describe('registerHandler', () => {
   })
 
   it('should add the channel to registerList when registering', () => {
-    expect(registerList.has(CHANNEL_FULL_NAME)).toBe(true)
+    expect(deregisterMap.has(CHANNEL_FULL_NAME)).toBe(true)
   })
 
   it('should remove the channel from registerList when unregister', () => {
     unregister()
-    expect(registerList.has(CHANNEL_FULL_NAME)).toBe(false)
+    expect(deregisterMap.has(CHANNEL_FULL_NAME)).toBe(false)
   })
 
   it('should remove the channel from registerList when all windows are closed', () => {
     (app.on as Mock).mock.calls[0][1]()
-    expect(registerList.has(CHANNEL_FULL_NAME)).toBe(false)
+    expect(deregisterMap.has(CHANNEL_FULL_NAME)).toBe(false)
   })
 })
 
