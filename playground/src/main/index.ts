@@ -1,15 +1,22 @@
 import { join } from 'node:path'
 import process from 'node:process'
-import { defineHandler } from '@byc/tipc'
-import { createSender, registerHandler } from '@byc/tipc/main'
+import { useTipc } from '@byc/tipc/main'
 import { app, BrowserWindow } from 'electron'
-
 import icon from '../../resources/icon.png?asset'
-import { CommonHandlerProto, CommonListenerProto } from '../commons/tipc/common'
 
-export const commonHandler = defineHandler(CommonHandlerProto, {
-  minimize(req) {
-    req.win.minimize()
+interface CommonTipc {
+  handles: {
+    hello: (msg: string) => void
+  }
+  listeners: {
+    hello: (msg: string) => void
+  }
+}
+
+const { init, sender } = useTipc<CommonTipc>('common', {
+  hello(meta, msg) {
+    // eslint-disable-next-line no-console
+    console.log(meta, msg)
   },
 })
 
@@ -28,11 +35,11 @@ function createWindow() {
     },
   })
 
-  registerHandler(commonHandler)
+  init()
 
-  const sender = createSender(win, CommonListenerProto)
+  const send = sender(win)
 
-  setInterval(() => sender.tell('hello!'), 1000)
+  setInterval(() => send.hello('hello!'), 1000)
 
   win.loadURL(process.env.ELECTRON_RENDERER_URL ?? '')
 

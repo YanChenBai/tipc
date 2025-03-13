@@ -1,15 +1,4 @@
-export const HANDLER = 'HANDLER'
-export const LISTENER = 'LISTENER'
-export function formatName(...args: string[]) {
-  return `__TIPC__${args.join(':')}`
-}
-
-export function getHandlerName(name: string) {
-  return formatName(HANDLER, name)
-}
-
-export function geListenerName(name: string, methodName: string) {
-  return formatName(LISTENER, name, methodName)
-}
-
-export const Method = Object
+export const TIPC_HANDLER = 'TIPC_HANDLER'
+export const TIPC_LISTENER = 'TIPC_LISTENER'
+export const TIPC_EXPOSE_NAME = 'tipc'
+export const joinName = (...args: string[]) => args.join(':')
