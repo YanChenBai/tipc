@@ -9,7 +9,7 @@ export default defineConfig({
     index: 'src/index.ts',
     main: 'src/main.ts',
     preload: 'src/preload.ts',
-    renderer: 'src/renderer.ts',
+    // renderer: 'src/renderer.ts',
   },
   external: ['electron'],
   format: ['cjs', 'esm'],

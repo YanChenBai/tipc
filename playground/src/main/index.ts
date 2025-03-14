@@ -14,9 +14,9 @@ interface CommonTipc {
 }
 
 const { init, sender } = useTipc<CommonTipc>('common', {
-  hello(meta, msg) {
+  hello(_meta, msg) {
     // eslint-disable-next-line no-console
-    console.log(meta, msg)
+    console.log(msg)
   },
 })
 

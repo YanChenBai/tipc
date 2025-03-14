@@ -22,11 +22,6 @@
       "dev": "./src/preload.ts",
       "import": "./dist/preload.js",
       "require": "./dist/preload.cjs"
-    },
-    "./renderer": {
-      "dev": "./src/renderer.ts",
-      "import": "./dist/renderer.js",
-      "require": "./dist/renderer.cjs"
     }
   },
   "types": "./dist/index.d.ts",
