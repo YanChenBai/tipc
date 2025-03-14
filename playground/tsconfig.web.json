@@ -17,6 +17,7 @@
     "src/renderer/src/**/*",
     "src/renderer/src/**/*.vue",
     "src/preload/*.d.ts",
-    "src/commons/**/*"
+    "src/commons/**/*",
+    "src/env.d.ts"
   ]
 }

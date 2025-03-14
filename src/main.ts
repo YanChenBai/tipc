@@ -1,84 +1,74 @@
-import type { IpcMainInvokeEvent } from 'electron'
-import type { TIPCMethods } from './type'
-import { app, BrowserWindow, ipcMain } from 'electron'
-import { geListenerName, getHandlerName, Method } from './common'
+import { BrowserWindow, ipcMain } from 'electron'
+import { TIPC_HANDLER } from './common'
 
-export const deregisterMap = new Map<string, () => void>()
+type Func = (...args: any[]) => void
 
-/**
- * 注册 handler
- * @returns 取消注册的方法
- */
-export function registerHandler(comply: TIPCMethods) {
-  const { methods, name } = comply
-  const channel = getHandlerName(name)
+interface HandleMeta {
+  event: Electron.IpcMainInvokeEvent
+  win: Electron.BrowserWindow | null
+}
 
-  // 避免重复注册
-  if (deregisterMap.has(channel))
-    return deregisterMap.get(channel)!
+type ConvertHandles<T extends Record<string, (...args: any[]) => any>> = {
+  [K in keyof T]: (meta: HandleMeta, ...args: Parameters<T[K]>) => ReturnType<T[K]>
+}
 
-  async function handler(event: IpcMainInvokeEvent, methodName: string, ...args: any[]) {
-    const method = methods[methodName]
+interface TipcSchema {
+  handles: Record<string, Func>
+  listeners: Record<string, Func>
+}
 
-    if (!method)
-      throw new Error(`[${channel}] Method '${methodName}' not registered`)
+const joinName = (...args: string[]) => args.join(':')
 
-    if (typeof method !== 'function')
-      throw new Error(`${channel} channel: method ${methodName} is not a function.`)
+const handleSet = new Set<string>()
 
-    const win = BrowserWindow.fromId(event.sender.id)
-    const context = { event, win }
+export function useTipc<T extends TipcSchema>(name: string, handles: ConvertHandles<T['handles']>) {
+  const channel = joinName(TIPC_HANDLER, name)
+
+  async function handle(
+    event: Electron.IpcMainInvokeEvent,
+    { method, args }: {
+      method: string
+      args: any[]
+    },
+  ) {
+    const func: Func = handles[method]
+
+    if (!func)
+      throw new Error(`Method '${method}' not registered`)
 
     try {
-      return await Promise.resolve(method(context, ...args))
+      const win = BrowserWindow.fromId(event.sender.id)
+      return await Promise.resolve(func({ event, win }, ...args))
     }
     catch (error) {
-      console.error(`[${channel}] Error in ${methodName}:`, error)
+      console.error(`[${channel}] Error in ${method}:`, error)
       throw error
     }
   }
 
-  ipcMain.handle(channel, handler)
+  function init() {
+    if (handleSet.has(channel))
+      return
 
-  // 清理函数
-  const deregister = () => {
-    ipcMain.removeHandler(channel)
-    deregisterMap.delete(channel)
-    app.off('window-all-closed', deregister)
+    handleSet.add(channel)
+
+    ipcMain.handle(channel, handle)
   }
 
-  // 保存清理方法
-  deregisterMap.set(channel, deregister)
+  function off() {
+    ipcMain.removeHandler(channel)
+    handleSet.delete(channel)
+  }
 
-  // 窗口全部关闭时自动清理
-  app.on('window-all-closed', deregister)
+  function sender(win: BrowserWindow) {
+    return new Proxy({} as T['listeners'], {
+      get(_target, method) {
+        return (...args: any[]) => {
+          win.webContents.send(joinName(channel, method.toString()), ...args)
+        }
+      },
+    })
+  }
 
-  return deregister
-}
-
-/**
- * 批量注册 handler
- * @param arr TIPCMethods数组
- * @returns 返回一个取消注册函数数组
- */
-export function batchRegisterHandlers(arr: TIPCMethods[]) {
-  return arr.map(item => registerHandler(item))
-}
-
-/** 创建发送 IPC 消息的函数 */
-export function createSender<T extends TIPCMethods>(win: BrowserWindow, proto: T): T['methods'] {
-  const initial = {} as T['methods']
-  const { name, methods } = proto
-
-  Object.keys(methods).reduce((acc, methodName) => {
-    if (methods[methodName] !== Method)
-      return acc;
-
-    (acc as any)[methodName] = (...args: any[]) =>
-      win.webContents.send(geListenerName(name, methodName), ...args)
-
-    return acc
-  }, initial)
-
-  return initial
+  return { off, sender, init }
 }

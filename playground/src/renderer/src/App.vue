@@ -1,11 +1,11 @@
 <script setup lang="ts">
-window.listener.tell((e) => {
-  // eslint-disable-next-line no-console
-  console.log(e)
-})
+// window.listener.tell((e) => {
+//   // eslint-disable-next-line no-console
+//   console.log(e)
+// })
 
 function minimize() {
-  window.invoke.minimize()
+  // window.invoke.minimize()
 }
 </script>
 
