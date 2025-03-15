@@ -1,27 +1,28 @@
+import type { AnyFn, FnMap } from './type'
 import { BrowserWindow, ipcMain } from 'electron'
-import { TIPC_HANDLER } from './common'
-
-type Func = (...args: any[]) => void
+import { TIPC_HANDLER, TIPC_LISTENER } from './common'
 
 interface HandleMeta {
   event: Electron.IpcMainInvokeEvent
   win: Electron.BrowserWindow | null
 }
 
-type ConvertHandles<T extends Record<string, (...args: any[]) => any>> = {
+type ConvertHandles<T extends FnMap> = {
   [K in keyof T]: (meta: HandleMeta, ...args: Parameters<T[K]>) => ReturnType<T[K]>
 }
 
-interface TipcSchema {
-  handles: Record<string, Func>
-  listeners: Record<string, Func>
+type ConvertListener<T extends FnMap> = {
+  [K in keyof T]: (...args: Parameters<T[K]>) => void
 }
 
-const joinName = (...args: string[]) => args.join(':')
+export const joinName = (...args: string[]) => args.join(':')
 
 const handleSet = new Set<string>()
 
-export function useTipc<T extends TipcSchema>(name: string, handles: ConvertHandles<T['handles']>) {
+export function useTipc<
+  Handles extends FnMap = FnMap,
+  Listener extends FnMap = FnMap,
+>(name: string, handles: ConvertHandles<Handles>) {
   const channel = joinName(TIPC_HANDLER, name)
 
   async function handle(
@@ -31,10 +32,10 @@ export function useTipc<T extends TipcSchema>(name: string, handles: ConvertHand
       args: any[]
     },
   ) {
-    const func: Func = handles[method]
+    const func: AnyFn = handles[method]
 
     if (!func)
-      throw new Error(`Method '${method}' not registered`)
+      throw new Error(`Method '${method}' is nonexistent.`)
 
     try {
       const win = BrowserWindow.fromId(event.sender.id)
@@ -60,15 +61,30 @@ export function useTipc<T extends TipcSchema>(name: string, handles: ConvertHand
     handleSet.delete(channel)
   }
 
-  function sender(win: BrowserWindow) {
-    return new Proxy({} as T['listeners'], {
+  function createSender(win: BrowserWindow) {
+    return new Proxy({}, {
       get(_target, method) {
         return (...args: any[]) => {
-          win.webContents.send(joinName(channel, method.toString()), ...args)
+          win.webContents.send(joinName(TIPC_LISTENER, name, method.toString()), ...args)
         }
       },
-    })
+    }) as ConvertListener<Listener>
   }
 
-  return { off, sender, init }
+  return {
+    off,
+    init,
+    createSender,
+  }
+}
+
+export function getAllTipc() {
+  return handleSet
+}
+
+export function clearAllTipc() {
+  for (const channel of handleSet) {
+    ipcMain.removeHandler(channel)
+  }
+  handleSet.clear()
 }

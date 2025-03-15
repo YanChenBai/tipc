@@ -10,7 +10,6 @@ export default defineConfig({
       ],
       exclude: [
         'src/type.ts',
-        'src/renderer.ts',
         'src/__test__/**',
       ],
     },
