@@ -5,25 +5,23 @@
 ### Install
 
 ```bash
-$ pnpm install @byc/tipc
+pnpm install @byc/tipc
 ```
 
 ### Usage
+
 #### Common
+
 ```typescript
-import { defineProto, Method } from '@byc/tipc'
+import type { FnMap } from '@byc/tipc/type'
 
-export const CommonHandlerProto = defineProto('CommonHandler', {
-  minimize: Method as () => void,
-})
+interface CommonHandles extends FnMap {
+  hello: (msg: string) => string
+}
 
-export const CommonListenerProto = defineProto('CommonListener', {
-  tell: Method as (msg: string) => void,
-})
-
-// type
-export type ICommonHandler = typeof CommonHandlerProto
-export type ICommonListener = typeof CommonListenerProto
+interface CommonListeners extends FnMap {
+  hello: (msg: string) => void
+}
 ```
 
 #### Main Process
@@ -31,68 +29,78 @@ export type ICommonListener = typeof CommonListenerProto
 ```typescript
 import { join } from 'node:path'
 import process from 'node:process'
-import { defineHandler } from '@byc/tipc'
-import { createSender, registerHandler } from '@byc/tipc/main'
+import { useTipc } from '@byc/tipc/main'
 import { app, BrowserWindow } from 'electron'
 
-export const commonHandler = defineHandler(CommonHandlerProto, {
-  minimize(req) {
-    req.win.minimize()
+const { init, createSender } = useTipc<CommonHandles, CommonListeners>('common', {
+  hello(_meta, msg) {
+    console.log(msg)
+    return msg
   },
 })
 
-function createWindow() {
-  const win = new BrowserWindow({
-    width: 900,
-    height: 670,
-    webPreferences: {
-      preload: join(__dirname, '../preload/index.js'),
-      sandbox: false,
-      nodeIntegration: false,
-      devTools: true,
-    },
+app.whenReady()
+  .then(() => {
+    // init tipc
+    init()
+
+    const win = new BrowserWindow({
+      webPreferences: {
+        preload: join(__dirname, '../preload/index.js'),
+        sandbox: false,
+        nodeIntegration: false,
+      },
+    })
+
+    win.loadURL('https://electronjs.org')
+
+    const send = createSender(win)
+
+    // send message to renderer process
+    send.hello('hello!')
   })
-
-  // register handler
-  registerHandler(commonHandler)
-
-  // create sender
-  const sender = createSender(win, CommonListenerProto)
-
-  // send message
-  setInterval(() => sender.tell('hello!'), 1000)
-
-  win.loadURL(process.env.ELECTRON_RENDERER_URL ?? '')
-
-  return win
-}
-
-app.whenReady().then(() => {
-  createWindow()
-})
-
-app.on('window-all-closed', () => app.quit())
 ```
 
 #### Preload
-```typescript
-import { exposeInvokes, exposeListeners } from '@byc/tipc/preload'
-import { contextBridge } from 'electron'
 
-// expose invoke and listener
-contextBridge.exposeInMainWorld('invoke', exposeInvokes(CommonHandlerProto))
-contextBridge.exposeInMainWorld('listener', exposeListeners(CommonListenerProto))
+```typescript
+import { exposeTipc } from '@byc/tipc/preload'
+
+exposeTipc()
 ```
 
 #### Renderer Process
+
 ```typescript
+import { invoke, listener } from '@byc/tipc'
+
 // listen message
-window.listener.tell((msg) => {
+listener.tell((msg) => {
   console.log(msg)
 })
 
 // invoke handler
-function minimize() {
-  window.invoke.minimize()
+invoke.hello()
+```
+
+#### tipc.d.ts
+
+``` typescript
+export {}
+
+declare module '@byc/tipc' {
+  interface TipcInvokeExpose {
+    common: CommonHandles
+  }
+
+  interface TipcListenerExpose {
+    common: CommonListeners
+  }
+}
+```
+
+```json
+{
+  "include": ["tipc.d.ts"]
 }
 ```

@@ -5,8 +5,13 @@ export default defineConfig({
     include: ['src/__test__/**'],
     environment: 'node',
     coverage: {
-      include: ['src/**/*.ts'],
-      exclude: ['src/type.ts', 'src/renderer.ts', 'src/__test__/**'],
+      include: [
+        'src/**/*.ts',
+      ],
+      exclude: [
+        'src/type.ts',
+        'src/__test__/**',
+      ],
     },
   },
 })

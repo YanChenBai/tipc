@@ -1,7 +1,8 @@
 {
   "name": "@byc/tipc",
   "type": "module",
-  "version": "1.0.1",
+  "version": "100",
+  "packageManager": "pnpm@9.15.9",
   "description": "",
   "author": "",
   "license": "ISC",
@@ -22,10 +23,10 @@
       "import": "./dist/preload.js",
       "require": "./dist/preload.cjs"
     },
-    "./renderer": {
-      "dev": "./src/renderer.ts",
-      "import": "./dist/renderer.js",
-      "require": "./dist/renderer.cjs"
+    "./type": {
+      "dev": "./src/type.ts",
+      "import": "./dist/type.js",
+      "require": "./dist/type.cjs"
     }
   },
   "types": "./dist/index.d.ts",
@@ -46,6 +47,10 @@
       "renderer": [
         "./dist/renderer.d.ts",
         "./dist/renderer.d.cts"
+      ],
+      "type": [
+        "./dist/type.d.ts",
+        "./dist/type.d.cts"
       ]
     }
   },

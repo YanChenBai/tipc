@@ -6,3 +6,19 @@ declare module '*.vue' {
   const component: DefineComponent<object, object, any>
   export default component
 }
+
+declare module '@byc/tipc' {
+  interface TipcInvokeExpose {
+    common: {
+      hello: (msg: string) => string
+    }
+  }
+
+  interface TipcListenerExpose {
+    common: {
+      hello: (msg: string) => void
+    }
+  }
+}
+
+export {}

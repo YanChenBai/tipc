@@ -1,38 +1,23 @@
-import type { ExposeInvokes, ExposeListeners, Func, TIPCMethods } from './type'
-import { ipcRenderer } from 'electron'
-import { geListenerName, getHandlerName, Method } from './common'
+import type { PreloadExpose } from './common'
+import { contextBridge, ipcRenderer } from 'electron'
+import { joinName, TIPC_EXPOSE_NAME, TIPC_HANDLER, TIPC_LISTENER } from './common'
 
-/** 暴露主进程的 IPC 调用方法 */
-export function exposeInvokes<T extends TIPCMethods, M = ExposeInvokes<T>>(proto: T) {
-  const { name, methods } = proto
-  const channel = getHandlerName(name)
+export const tipc: PreloadExpose = {
+  invoke(name: string, method: string, ...args: any[]) {
+    return ipcRenderer.invoke(joinName(TIPC_HANDLER, name), {
+      method,
+      args,
+    })
+  },
 
-  return Object.keys(methods).reduce((acc, methodName) => {
-    const method = methods[methodName]
-    if (method === Method)
-      acc[methodName] = (...args: any[]) => ipcRenderer.invoke(channel, methodName, ...args)
-
-    return acc
-  }, {} as M)
+  listener(name: string, method: string, cb: (...args: any[]) => void) {
+    const channel = joinName(TIPC_LISTENER, name, method)
+    const _callback = (_event: Electron.IpcRendererEvent, args: any[]) => cb(args)
+    ipcRenderer.addListener(channel, _callback)
+    return () => ipcRenderer.removeListener(channel, _callback)
+  },
 }
 
-/** 暴露渲染进程的 IPC 监听函数 */
-export function exposeListeners<T extends TIPCMethods, M = ExposeListeners<T>>(proto: T) {
-  const { name, methods } = proto
-  return Object.keys(methods).reduce((acc, methodName) => {
-    const method = methods[methodName]
-    if (method === Method) {
-      acc[methodName] = (cb: Func) => {
-        const channel = geListenerName(name, methodName)
-        const listener = (_e, ...args: any[]) => cb(...args)
-
-        ipcRenderer.on(channel, listener)
-
-        return () => {
-          ipcRenderer.removeListener(channel, listener)
-        }
-      }
-    }
-    return acc
-  }, {} as M)
+export function exposeTipc() {
+  contextBridge.exposeInMainWorld(TIPC_EXPOSE_NAME, tipc)
 }

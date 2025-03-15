@@ -1,15 +1,23 @@
+import type { FnMap } from '@byc/tipc/type'
 import { join } from 'node:path'
 import process from 'node:process'
-import { defineHandler } from '@byc/tipc'
-import { createSender, registerHandler } from '@byc/tipc/main'
+import { useTipc } from '@byc/tipc/main'
 import { app, BrowserWindow } from 'electron'
-
 import icon from '../../resources/icon.png?asset'
-import { CommonHandlerProto, CommonListenerProto } from '../commons/tipc/common'
 
-export const commonHandler = defineHandler(CommonHandlerProto, {
-  minimize(req) {
-    req.win.minimize()
+interface CommonHandles extends FnMap {
+  hello: (msg: string) => void
+}
+
+interface CommonListeners extends FnMap {
+  hello: (msg: string) => string
+}
+
+const { init, createSender } = useTipc<CommonHandles, CommonListeners>('common', {
+  hello(_meta, msg) {
+    // eslint-disable-next-line no-console
+    console.log(msg)
+    return msg
   },
 })
 
@@ -28,11 +36,11 @@ function createWindow() {
     },
   })
 
-  registerHandler(commonHandler)
+  init()
 
-  const sender = createSender(win, CommonListenerProto)
+  const send = createSender(win)
 
-  setInterval(() => sender.tell('hello!'), 1000)
+  setInterval(() => send.hello('hello!'), 1000)
 
   win.loadURL(process.env.ELECTRON_RENDERER_URL ?? '')
 
