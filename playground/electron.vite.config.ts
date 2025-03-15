@@ -10,9 +10,6 @@ export default defineConfig({
     ],
     resolve: {
       conditions: ['dev'],
-      alias: {
-        '@byc/tipc': resolve('../src'),
-      },
     },
   },
   preload: {
@@ -21,9 +18,6 @@ export default defineConfig({
     ],
     resolve: {
       conditions: ['dev'],
-      alias: {
-        '@byc/tipc': resolve('../src'),
-      },
     },
   },
   renderer: {
@@ -31,7 +25,6 @@ export default defineConfig({
       conditions: ['dev'],
       alias: {
         '@renderer': resolve('src/renderer/src'),
-        '@byc/tipc': resolve('../src'),
       },
     },
     plugins: [vue()],
