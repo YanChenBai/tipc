@@ -6,8 +6,8 @@
     "customConditions": ["dev"],
     "moduleResolution": "Bundler",
     "paths": {
-      "@renderer/*": ["src/renderer/src/*"],
-      "@byc/tipc": ["../src/*"]
+      "@renderer/*": ["src/renderer/src/*"]
+      // "@byc/tipc": ["../src/*"]
     },
     "strict": true
   },

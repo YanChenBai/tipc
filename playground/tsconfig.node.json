@@ -7,7 +7,7 @@
     "customConditions": ["dev"],
     "moduleResolution": "Bundler",
     "paths": {
-      "@byc/tipc": ["../src/*"]
+      // "@byc/tipc": ["../src/*"]
     },
     "types": ["electron-vite/node"],
     "strict": true
