@@ -1,22 +1,23 @@
+import type { FnMap } from '@byc/tipc/type'
 import { join } from 'node:path'
 import process from 'node:process'
 import { useTipc } from '@byc/tipc/main'
 import { app, BrowserWindow } from 'electron'
 import icon from '../../resources/icon.png?asset'
 
-interface CommonTipc {
-  handles: {
-    hello: (msg: string) => void
-  }
-  listeners: {
-    hello: (msg: string) => void
-  }
+interface CommonHandles extends FnMap {
+  hello: (msg: string) => void
 }
 
-const { init, sender } = useTipc<CommonTipc>('common', {
-  hello(meta, msg) {
+interface CommonListeners extends FnMap {
+  hello: (msg: string) => string
+}
+
+const { init, createSender } = useTipc<CommonHandles, CommonListeners>('common', {
+  hello(_meta, msg) {
     // eslint-disable-next-line no-console
-    console.log(meta, msg)
+    console.log(msg)
+    return msg
   },
 })
 
@@ -37,7 +38,7 @@ function createWindow() {
 
   init()
 
-  const send = sender(win)
+  const send = createSender(win)
 
   setInterval(() => send.hello('hello!'), 1000)
 

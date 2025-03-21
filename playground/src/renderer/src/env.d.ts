@@ -1,5 +1,4 @@
 /// <reference types="vite/client" />
-import '@byc/tipc/renderer'
 
 declare module '*.vue' {
   import type { DefineComponent } from 'vue'
@@ -8,9 +7,17 @@ declare module '*.vue' {
   export default component
 }
 
-declare module '@byc/tipc/renderer' {
-  interface TipcExpose {
-    name: (name: string) => string
+declare module '@byc/tipc' {
+  interface TipcInvokeExpose {
+    common: {
+      hello: (msg: string) => string
+    }
+  }
+
+  interface TipcListenerExpose {
+    common: {
+      hello: (msg: string) => void
+    }
   }
 }
 

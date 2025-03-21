@@ -6,14 +6,15 @@
     "experimentalDecorators": true,
     "customConditions": ["dev"],
     "moduleResolution": "Bundler",
+    "paths": {
+      // "@byc/tipc": ["../src/*"]
+    },
     "types": ["electron-vite/node"],
     "strict": true
   },
   "include": [
     "electron.vite.config.*",
     "src/main/**/*",
-    "src/preload/**/*",
-    "../src/*",
-    "src/commons/**/*"
+    "src/preload/**/*"
   ]
 }

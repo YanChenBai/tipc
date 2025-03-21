@@ -1,11 +1,13 @@
-import { iniTipc, type TipcExpose } from '@byc/tipc/renderer'
+/* eslint-disable no-console */
+import { invoke, listener } from '@byc/tipc'
 import { createApp } from 'vue'
 import App from './App.vue'
 import './assets/main.css'
 
-iniTipc()
 createApp(App).mount('#app')
+invoke.common.hello('hello').then(console.log)
+const off = listener.common.hello(msg => console.log(msg))
 
-const invoke = { } as TipcExpose
-
-invoke.name('name')
+setTimeout(() => {
+  off()
+}, 10000)

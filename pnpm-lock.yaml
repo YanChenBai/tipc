@@ -48,7 +48,7 @@ importers:
   playground:
     dependencies:
       '@byc/tipc':
-        specifier: workspace:*
+        specifier: workspace:../
         version: link:..
       '@electron-toolkit/preload':
         specifier: ^3.0.1
