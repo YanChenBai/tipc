@@ -1,0 +1,53 @@
+{
+  "name": "@byc/window-tipc",
+  "version": "0.0.1",
+  "description": "",
+  "author": "",
+  "license": "ISC",
+  "keywords": [],
+  "exports": {
+    ".": {
+      "dev": "./core/index.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./type": {
+      "dev": "./core/type.ts",
+      "import": "./dist/type.js",
+      "require": "./dist/type.cjs"
+    }
+  },
+  "types": "./dist/index.d.ts",
+  "typesVersions": {
+    "*": {
+      ".": [
+        "./dist/index.d.ts",
+        "./dist/index.d.cts"
+      ],
+      "type": [
+        "./dist/type.d.ts",
+        "./dist/type.d.cts"
+      ]
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "pkg:publish": "pnpm build & pnpm publish"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "dependencies": {
+    "@byc/tipc": "^0.0.93",
+    "hmc-win32": "^1.4.92",
+    "lodash-es": "^4.17.21"
+  },
+  "devDependencies": {
+    "@types/lodash-es": "^4.17.12",
+    "electron": "^35.0.3"
+  }
+}

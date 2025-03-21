@@ -1,10 +1,14 @@
 {
   "extends": "@electron-toolkit/tsconfig/tsconfig.node.json",
   "compilerOptions": {
+    "types": [
+      "lodash-es"
+    ],
     "strict": true
   },
   "include": [
-    "src/**/*"
+    "core/**/*",
+    "./window-tipc/**/*"
   ],
   "exclude": [
     "playground",

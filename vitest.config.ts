@@ -2,15 +2,15 @@ import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
   test: {
-    include: ['src/__test__/**'],
+    include: ['core/__test__/**'],
     environment: 'node',
     coverage: {
       include: [
-        'src/**/*.ts',
+        'core/**/*.ts',
       ],
       exclude: [
-        'src/type.ts',
-        'src/__test__/**',
+        'core/type.ts',
+        'core/__test__/**',
       ],
     },
   },

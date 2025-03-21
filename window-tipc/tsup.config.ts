@@ -4,14 +4,16 @@ import { defineConfig } from 'tsup'
 const isDev = process.env.NODE_ENV === 'development'
 
 export default defineConfig({
-  tsconfig: './tsconfig.node.json',
+  tsconfig: '../tsconfig.node.json',
   entry: {
-    index: 'core/index.ts',
-    main: 'core/main.ts',
-    preload: 'core/preload.ts',
-    type: 'core/type.ts',
+    index: 'index.ts',
+    type: 'type.ts',
   },
-  external: ['electron'],
+  external: [
+    'electron',
+    '@byc/tipc',
+    'hmc-win32',
+  ],
   format: ['cjs', 'esm'],
   sourcemap: isDev,
   minify: false,

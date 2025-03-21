@@ -9,22 +9,22 @@
   "keywords": [],
   "exports": {
     ".": {
-      "dev": "./src/index.ts",
+      "dev": "./core/index.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
     },
     "./main": {
-      "dev": "./src/main.ts",
+      "dev": "./core/main.ts",
       "import": "./dist/main.js",
       "require": "./dist/main.cjs"
     },
     "./preload": {
-      "dev": "./src/preload.ts",
+      "dev": "./core/preload.ts",
       "import": "./dist/preload.js",
       "require": "./dist/preload.cjs"
     },
     "./type": {
-      "dev": "./src/type.ts",
+      "dev": "./core/type.ts",
       "import": "./dist/type.js",
       "require": "./dist/type.cjs"
     }
@@ -43,10 +43,6 @@
       "preload": [
         "./dist/preload.d.ts",
         "./dist/preload.d.cts"
-      ],
-      "renderer": [
-        "./dist/renderer.d.ts",
-        "./dist/renderer.d.cts"
       ],
       "type": [
         "./dist/type.d.ts",
@@ -67,7 +63,8 @@
     "test": "vitest",
     "coverage": "vitest run --coverage",
     "pkg:publish": "pnpm build & pnpm publish",
-    "pkg:publish:test": "pnpm build & pnpm publish --no-git-checks --dry-run"
+    "pkg:publish:test": "pnpm build & pnpm publish --no-git-checks --dry-run",
+    "pkg:publish:window-tipc": "pnpm --filter @byc/window-tipc pkg:publish"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^3.8.0",
