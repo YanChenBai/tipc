@@ -2,29 +2,30 @@ import type { PreloadExpose } from './common'
 import { TIPC_EXPOSE_NAME } from './common'
 
 type Func = (...args: any[]) => any
+type FuncMapOfMaps = Record<string, Record<string, Func>>
 
 type FuncToPromise<T extends Func> = (...args: Parameters<T>) => ReturnType<T> extends Promise<any>
   ? ReturnType<T>
   : Promise<ReturnType<T>>
 
-type ConvertInvoke<T extends Record<string, Record<string, Func>>> = {
+type ConvertInvoke<T extends FuncMapOfMaps> = {
   [K in keyof T]: {
     [V in keyof T[K]]: FuncToPromise<T[K][V]>
   }
 }
 
-type ConvertListener<T extends Record<string, Record<string, Func>>> = {
+type ConvertListener<T extends FuncMapOfMaps> = {
   [K in keyof T]: {
     [V in keyof T[K]]: (callback: (...args: Parameters<T[K][V]>) => void) => () => void
   }
 }
 
-export interface TipcInvokeExpose {
-  [key: string]: Record<string, Func>
+export interface TipcInvokeExpose extends FuncMapOfMaps {
+
 }
 
-export interface TipcListenerExpose {
-  [key: string]: Record<string, Func>
+export interface TipcListenerExpose extends FuncMapOfMaps {
+
 }
 
 const tipc: PreloadExpose = {

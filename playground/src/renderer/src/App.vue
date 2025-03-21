@@ -1,12 +1,5 @@
 <script setup lang="ts">
-// window.listener.tell((e) => {
-//   // eslint-disable-next-line no-console
-//   console.log(e)
-// })
 
-function minimize() {
-  // window.invoke.minimize()
-}
 </script>
 
 <template>
@@ -28,7 +21,7 @@ function minimize() {
       <a href="https://electron-vite.org/" target="_blank" rel="noreferrer">Documentation</a>
     </div>
     <div class="action">
-      <a target="_blank" rel="noreferrer" @click="minimize">Minimize</a>
+      <a target="_blank" rel="noreferrer">Minimize</a>
     </div>
   </div>
 </template>
