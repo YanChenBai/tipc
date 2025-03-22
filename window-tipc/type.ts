@@ -1,6 +1,5 @@
 import type { FnMap } from '@byc/tipc/type'
 import type { BrowserWindow } from 'electron'
-import '@byc/tipc'
 
 export interface WindowHandler extends FnMap {
   maximize: () => void
@@ -27,15 +26,3 @@ export interface WindowListener extends FnMap {
   onLeave: () => void
   onAlwaysOnTopChange: (isAlwaysOnTop: boolean) => void
 }
-
-declare module '@byc/tipc' {
-  interface TipcInvokeExpose {
-    window: WindowHandler
-  }
-
-  interface TipcListenerExpose {
-    window: WindowListener
-  }
-}
-
-export {}

@@ -7,6 +7,7 @@ export default defineConfig({
   tsconfig: '../tsconfig.node.json',
   entry: {
     index: 'index.ts',
+    renderer: 'renderer.ts',
     type: 'type.ts',
   },
   external: [

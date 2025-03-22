@@ -1,6 +1,6 @@
 {
   "name": "@byc/window-tipc",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "",
   "author": "",
   "license": "ISC",
@@ -15,6 +15,11 @@
       "dev": "./core/type.ts",
       "import": "./dist/type.js",
       "require": "./dist/type.cjs"
+    },
+    "./renderer": {
+      "dev": "./core/renderer.ts",
+      "import": "./dist/renderer.js",
+      "require": "./dist/renderer.cjs"
     }
   },
   "types": "./dist/index.d.ts",
@@ -27,6 +32,10 @@
       "type": [
         "./dist/type.d.ts",
         "./dist/type.d.cts"
+      ],
+      "renderer": [
+        "./dist/renderer.d.ts",
+        "./dist/renderer.d.cts"
       ]
     }
   },
