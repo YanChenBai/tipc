@@ -33,8 +33,8 @@ function getMouseInWinPos(win: BrowserWindow) {
   }
 }
 
-export function useWindowTipc(name: string) {
-  const windowTipc = useTipc<WindowHandler, WindowListener>(name, {
+export function useWindowTipc() {
+  const windowTipc = useTipc<WindowHandler, WindowListener>('window', {
     maximize({ win }) {
       win?.maximize()
     },
@@ -113,6 +113,7 @@ export function useWindowTipc(name: string) {
   }
 
   return {
+    createSender: windowTipc.createSender,
     checkAllWindow,
     destroy,
     init,

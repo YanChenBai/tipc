@@ -26,3 +26,13 @@ export interface WindowListener extends FnMap {
   onLeave: () => void
   onAlwaysOnTopChange: (isAlwaysOnTop: boolean) => void
 }
+
+declare module '@byc/tipc' {
+  interface TipcInvokeExpose {
+    window: WindowHandler
+  }
+
+  interface TipcListenerExpose {
+    window: WindowListener
+  }
+}
