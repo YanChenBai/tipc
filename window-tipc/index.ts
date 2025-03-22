@@ -76,9 +76,9 @@ export function useWindowTipc() {
   function startListen(win: BrowserWindow) {
     const sender = windowTipc.createSender(win)
     const targetAlwaysOnTopChange = (_: any, is: boolean) => sender.onAlwaysOnTopChange(is)
-    const targetMaximize = sender.onMaximize
-    const targetMinimize = sender.onMinimize
-    const targetUnmaximize = sender.onUnmaximize
+    const targetMaximize = () => sender.onMaximize()
+    const targetMinimize = () => sender.onMinimize()
+    const targetUnmaximize = () => sender.onUnmaximize()
 
     win.on('always-on-top-changed', targetAlwaysOnTopChange)
     win.on('maximize', targetMaximize)
