@@ -1,5 +1,6 @@
+import type { FnMap } from '@byc/tipc/type'
 import type { BrowserWindow } from 'electron'
-import type { FnMap } from '../core/type'
+import '@byc/tipc'
 
 export interface WindowHandler extends FnMap {
   maximize: () => void
@@ -36,3 +37,5 @@ declare module '@byc/tipc' {
     window: WindowListener
   }
 }
+
+export {}
