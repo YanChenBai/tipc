@@ -1,6 +1,6 @@
 import { listener } from '@byc/tipc'
 
-const TAG_NAME = 'drag'
+const TAG_NAME = 'hover'
 
 export function useHover() {
   let prevElement: HTMLDivElement | null = null
@@ -13,7 +13,7 @@ export function useHover() {
       return
     }
 
-    const target = pointElement.closest('.drag') as HTMLDivElement
+    const target = pointElement.closest(`.${TAG_NAME}`) as HTMLDivElement
 
     if (target?.getAttribute(TAG_NAME))
       return
