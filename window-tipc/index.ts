@@ -59,10 +59,10 @@ export function useWindowTipc() {
     isAlwaysOnTop({ win }): boolean {
       return win?.isAlwaysOnTop() ?? false
     },
-    isMouseInWindow({ win }) {
+    getMousePosInWindow({ win }) {
       if (!win)
-        return false
-      return getMouseInWinPos(win) !== null
+        return null
+      return getMouseInWinPos(win)
     },
     setAspectRatio({ win }, aspectRatio: number, extraSize?: Electron.Size | undefined) {
       win?.setAspectRatio(aspectRatio, extraSize)

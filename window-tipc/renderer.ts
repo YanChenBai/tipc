@@ -1,4 +1,6 @@
-import { listener } from '@byc/tipc'
+/// <reference types="./env.d.ts" />
+
+import { invoke, listener } from '@byc/tipc'
 
 const TAG_NAME = 'hover'
 
@@ -6,8 +8,8 @@ export function useHover() {
   let prevElement: HTMLDivElement | null = null
   const offFns: Array<() => void> = []
 
-  const moveOff = listener.window.onMove((event) => {
-    const pointElement = document.elementFromPoint(event.x, event.y)
+  function check(pos: { x: number, y: number }) {
+    const pointElement = document.elementFromPoint(pos.x, pos.y)
 
     if (!pointElement) {
       return
@@ -27,7 +29,15 @@ export function useHover() {
 
     prevElement = target
     target.setAttribute(TAG_NAME, 'true')
-  })
+  }
+
+  invoke.window.getMousePosInWindow()
+    .then((pos) => {
+      if (pos)
+        check(pos)
+    })
+
+  const moveOff = listener.window.onMove(event => check(event))
 
   const onLeaveOff = listener.window.onLeave(() => {
     prevElement?.removeAttribute(TAG_NAME)

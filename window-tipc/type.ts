@@ -9,7 +9,7 @@ export interface WindowHandler extends FnMap {
   close: () => void
   isMaximized: () => boolean
   isMinimized: () => boolean
-  isMouseInWindow: () => boolean
+  getMousePosInWindow: () => { x: number, y: number } | null
   isAlwaysOnTop: () => boolean
   setAspectRatio: (aspectRatio: number, extraSize?: Electron.Size) => any
   setAlwaysOnTop: BrowserWindow['setAlwaysOnTop']
