@@ -36,6 +36,10 @@
       "renderer": [
         "./dist/renderer.d.ts",
         "./dist/renderer.d.cts"
+      ],
+      "env": [
+        "./dist/env.d.ts",
+        "./dist/env.d.cts"
       ]
     }
   },

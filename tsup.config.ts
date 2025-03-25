@@ -10,6 +10,7 @@ export default defineConfig({
     main: 'core/main.ts',
     preload: 'core/preload.ts',
     type: 'core/type.ts',
+    schema: 'core/schema.ts',
   },
   external: ['electron'],
   format: ['cjs', 'esm'],

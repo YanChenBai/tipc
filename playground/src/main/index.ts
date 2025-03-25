@@ -2,6 +2,7 @@ import type { FnMap } from '@byc/tipc/type'
 import { join } from 'node:path'
 import process from 'node:process'
 import { useTipc } from '@byc/tipc/main'
+import { defineSchema } from '@byc/tipc/schema'
 import { app, BrowserWindow } from 'electron'
 import icon from '../../resources/icon.png?asset'
 
@@ -13,7 +14,9 @@ interface CommonListeners extends FnMap {
   hello: (msg: string) => string
 }
 
-const { init, createSender } = useTipc<CommonHandles, CommonListeners>('common', {
+const commonTipcSchema = defineSchema<CommonHandles, CommonListeners>('common')
+
+const { init, createSender } = useTipc(commonTipcSchema, {
   hello(_meta, msg) {
     // eslint-disable-next-line no-console
     console.log(msg)

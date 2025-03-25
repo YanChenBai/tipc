@@ -3,6 +3,7 @@ import { ipcMain } from 'electron'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { joinName, TIPC_HANDLER, TIPC_LISTENER } from '../common'
 import { clearAllTipc, getAllTipc, useTipc } from '../main'
+import { defineSchema } from '../schema'
 
 const mockWindow = {
   webContents: {
@@ -37,8 +38,9 @@ describe('返回方法测试', () => {
   it('正常流程的使用', () => {
     const name = 'normal'
     const channelName = joinName(TIPC_HANDLER, name)
+    const schema = defineSchema(name)
 
-    const { init } = useTipc('normal', {})
+    const { init } = useTipc(schema, {})
     init()
 
     expect(ipcMain.handle).toHaveBeenCalledTimes(1)
@@ -51,14 +53,18 @@ describe('返回方法测试', () => {
 
   it('未初始化时无任何调用', () => {
     const name = 'no-init'
-    useTipc(name, {})
+    const schema = defineSchema(name)
+
+    useTipc(schema, {})
 
     expect(ipcMain.handle).not.toHaveBeenCalled()
     expect(getAllTipc().has(name)).toBe(false)
   })
 
   it('重复初始化应只注册一次', () => {
-    const { init } = useTipc('duplicate', {})
+    const schema = defineSchema('duplicate')
+    const { init } = useTipc(schema, {})
+
     init()
     init()
 
@@ -68,8 +74,9 @@ describe('返回方法测试', () => {
   it('调用 off() 后应移除处理器', () => {
     const name = 'remove-test'
     const channelName = joinName(TIPC_HANDLER, name)
+    const schema = defineSchema(name)
 
-    const { init, off } = useTipc(name, {})
+    const { init, off } = useTipc(schema, {})
     init()
     off()
 
@@ -79,7 +86,9 @@ describe('返回方法测试', () => {
 
   it('sender测试', () => {
     const name = 'sender'
-    const { createSender } = useTipc<any, { test: (arg1: string, args2: number) => void }>(name, {})
+    const schema = defineSchema<any, { test: (arg1: string, args2: number) => void }>(name)
+
+    const { createSender } = useTipc(schema, {})
 
     const mockWindow = { webContents: { send: vi.fn() } } as unknown as BrowserWindow
 
@@ -99,7 +108,9 @@ describe('返回方法测试', () => {
       test: vi.fn().mockResolvedValue(1),
     }
 
-    const { init } = useTipc('args', mockHandle)
+    const schema = defineSchema('args')
+
+    const { init } = useTipc(schema, mockHandle)
 
     init()
 
@@ -133,7 +144,9 @@ describe('错误处理', () => {
       test: vi.fn().mockRejectedValue(new Error('handler error')),
     }
 
-    const { init } = useTipc('error', mockHandle)
+    const schema = defineSchema('error')
+
+    const { init } = useTipc(schema, mockHandle)
 
     init()
 
@@ -152,7 +165,8 @@ describe('错误处理', () => {
       test: vi.fn(),
     }
 
-    const { init } = useTipc('empty', mockHandle)
+    const schema = defineSchema('empty')
+    const { init } = useTipc(schema, mockHandle)
     init()
 
     const handle = vi.mocked(ipcMain.handle).mock.calls[0][1]
@@ -168,8 +182,11 @@ describe('clear', () => {
   clearMock()
 
   it('clearAllTipc()', () => {
-    useTipc('tipc1', {}).init()
-    useTipc('tipc2', {}).init()
+    const schema1 = defineSchema('tipc1')
+    const schema2 = defineSchema('tipc2')
+
+    useTipc(schema1, {}).init()
+    useTipc(schema2, {}).init()
 
     clearAllTipc()
 

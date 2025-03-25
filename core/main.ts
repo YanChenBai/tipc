@@ -15,14 +15,22 @@ type ConvertListener<T extends FnMap> = {
   [K in keyof T]: (...args: Parameters<T[K]>) => void
 }
 
+interface TipcSchema {
+  name: string
+  handlers: FnMap
+  listeners: FnMap
+}
+
 export const joinName = (...args: string[]) => args.join(':')
 
 const handleSet = new Set<string>()
 
 export function useTipc<
-  Handles extends FnMap = FnMap,
-  Listener extends FnMap = FnMap,
->(name: string, handles: ConvertHandles<Handles>) {
+  T extends TipcSchema = TipcSchema,
+  Handles extends FnMap = T['handlers'],
+  Listener extends FnMap = T['listeners'],
+>(schema: T, handles: ConvertHandles<Handles>) {
+  const name = schema.name
   const channel = joinName(TIPC_HANDLER, name)
 
   async function handle(

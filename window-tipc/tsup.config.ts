@@ -9,6 +9,7 @@ export default defineConfig({
     index: 'index.ts',
     renderer: 'renderer.ts',
     type: 'type.ts',
+    env: 'env.d.ts',
   },
   external: [
     'electron',
