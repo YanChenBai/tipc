@@ -7,16 +7,6 @@ settings:
 importers:
 
   .:
-    dependencies:
-      arktype:
-        specifier: ^2.1.12
-        version: 2.1.12
-      oxc-parser:
-        specifier: ^0.61.2
-        version: 0.61.2
-      ts-morph:
-        specifier: ^25.0.1
-        version: 25.0.1
     devDependencies:
       '@antfu/eslint-config':
         specifier: ^4.10.2
@@ -48,6 +38,9 @@ importers:
       husky:
         specifier: ^9.1.7
         version: 9.1.7
+      oxc-parser:
+        specifier: ^0.61.2
+        version: 0.61.2
       tsup:
         specifier: ^8.4.0
         version: 8.4.0(@swc/core@1.11.11)(jiti@1.21.6)(postcss@8.5.3)(tsx@4.19.3)(typescript@5.6.3)(yaml@2.7.0)
@@ -131,8 +124,8 @@ importers:
   window-tipc:
     dependencies:
       '@byc/tipc':
-        specifier: ^0.0.93
-        version: 0.0.93
+        specifier: ^0.1.0
+        version: 0.1.0
       hmc-win32:
         specifier: ^1.4.92
         version: 1.4.92
@@ -211,12 +204,6 @@ packages:
 
   '@antfu/utils@0.7.10':
     resolution: {integrity: sha512-+562v9k4aI80m1+VuMHehNJWLOFjBnXn3tdOitzD0il5b7smkSBal4+a3oKiQTbrwMmN/TBUMDvbdoWDehgOww==}
-
-  '@ark/schema@0.45.2':
-    resolution: {integrity: sha512-rMzFbO2RuwukEzdBq42D/WS0OS1McpRhaSJHdvuGc/Xfxwn6gw1GwG6+JDNsVuto0TMRwA+zteCDMBW0FXxAPw==}
-
-  '@ark/util@0.45.2':
-    resolution: {integrity: sha512-atlBhyMEfEB8yFDmYh+m9aHdOwjOoEEOF76k1ZxVpQLUdpuiofBou4JtKBR1fojpnlNhevdlWg9KO/4eTjuRBA==}
 
   '@babel/code-frame@7.24.7':
     resolution: {integrity: sha512-BcYH1CVJBO9tvyIZ2jVeXgSIMvGZ2FDRvDdOIVQyuklNKSsx+eppDEBq/g47Ayw+RqNFE+URvOShmf+f/qwAlA==}
@@ -310,8 +297,8 @@ packages:
   '@bcoe/v8-coverage@0.2.3':
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
 
-  '@byc/tipc@0.0.93':
-    resolution: {integrity: sha512-DI5S0jL77/lFW7gr3+ObXI1miea5Mw7wv/ceR4D6uatxpbMao2vMD0q6kNS+FFhAhnuK12Mz+KFLztmyxUcHiw==}
+  '@byc/tipc@0.1.0':
+    resolution: {integrity: sha512-uKA2YxAsLjtZR8R5mJBmZ+2o6VlYlaYNIhov1BZBAhj6gjHWXHiQUdR1PejZPF9dzCz+l6gRulouvlqTqteleQ==}
 
   '@clack/core@0.4.1':
     resolution: {integrity: sha512-Pxhij4UXg8KSr7rPek6Zowm+5M22rbd2g1nfojHJkxp5YkFqiZ2+YLEM/XGVIzvGOcM0nqjIFxrpDwWRZYWYjA==}
@@ -1474,9 +1461,6 @@ packages:
     resolution: {integrity: sha512-XCuKFP5PS55gnMVu3dty8KPatLqUoy/ZYzDzAGCQ8JNFCkLXzmI7vNHCR+XpbZaMWQK/vQubr7PkYq8g470J/A==}
     engines: {node: '>= 10'}
 
-  '@ts-morph/common@0.26.1':
-    resolution: {integrity: sha512-Sn28TGl/4cFpcM+jwsH1wLncYq3FtN/BIpem+HOygfBWPT5pAeS5dB4VFVzV8FbnOKHpDLZmvAl4AjPEev5idA==}
-
   '@tybys/wasm-util@0.9.0':
     resolution: {integrity: sha512-6+7nlbMVX/PVDCwaIQ8nTOPveOcFLSt8GcXdx8hD0bt39uWxYT88uXzqTd4fTvqta7oeUJqudepapKNt2DYJFw==}
 
@@ -2075,9 +2059,6 @@ packages:
   argparse@2.0.1:
     resolution: {integrity: sha512-8+9WqebbFzpX9OR+Wa6O29asIogeRMzcGtAINdpMHHyAg10f05aSFVBbcEqGf/PXw1EjAZ+q2/bEBg3DvurK3Q==}
 
-  arktype@2.1.12:
-    resolution: {integrity: sha512-FdPoK/i+xQTehWfBBBSyCOZSN7ZMUjPdwkJR03/My+ckeuyaEGNi2tII1GIZ5WJep3i6vmFJ7PK1+4wNRDHKFw==}
-
   array-union@2.1.0:
     resolution: {integrity: sha512-HGyxoOTYUyCM6stUe6EJgnd4EoewAI7zMdfqO+kGjnlZmBDz/cR5pf8r/cR4Wq60sL/p0IkcjUEEPwS3GFrIyw==}
     engines: {node: '>=8'}
@@ -2284,9 +2265,6 @@ packages:
   clone@1.0.4:
     resolution: {integrity: sha512-JQHZ2QMW6l3aH/j6xCqQThY/9OH4D/9ls34cgkUBiEeocRTU04tHfKPBsUK1PqZCUQM7GiA0IIXJSuXHI64Kbg==}
     engines: {node: '>=0.8'}
-
-  code-block-writer@13.0.3:
-    resolution: {integrity: sha512-Oofo0pq3IKnsFtuHqSF7TqBfr71aeyZDVJ0HpmqB7FBM2qEigL0iPONSCZSO9pE9dZTAxANe5XHG9Uy0YMv8cg==}
 
   color-convert@1.9.3:
     resolution: {integrity: sha512-QfAUtd+vFdAtFQcC8CCyYt1fYWxSqAiK2cSD6zDB8N3cpsEBAvRxp9zOGg6G/SHHJYAT88/az/IuDGALsNVbGg==}
@@ -4440,9 +4418,6 @@ packages:
   ts-interface-checker@0.1.13:
     resolution: {integrity: sha512-Y/arvbn+rrz3JCKl9C4kVNfTfSm2/mEp5FSz5EsZSANGPSlQrpRI5M4PKF+mJnE52jOO90PnPSc3Ur3bTQw0gA==}
 
-  ts-morph@25.0.1:
-    resolution: {integrity: sha512-QJEiTdnz1YjrB3JFhd626gX4rKHDLSjSVMvGGG4v7ONc3RBwa0Eei98G9AT9uNFDMtV54JyuXsFeC+OH0n6bXQ==}
-
   tslib@2.7.0:
     resolution: {integrity: sha512-gLXCKdN1/j47AiHiOkJN69hJmcbGTHI0ImLmbYLHykhgeN0jVGola9yVjFgzCUklsZQMW55o+dW7IXv3RCXDzA==}
 
@@ -4872,12 +4847,6 @@ snapshots:
   '@antfu/utils@0.7.10':
     optional: true
 
-  '@ark/schema@0.45.2':
-    dependencies:
-      '@ark/util': 0.45.2
-
-  '@ark/util@0.45.2': {}
-
   '@babel/code-frame@7.24.7':
     dependencies:
       '@babel/highlight': 7.24.7
@@ -5007,7 +4976,7 @@ snapshots:
 
   '@bcoe/v8-coverage@0.2.3': {}
 
-  '@byc/tipc@0.0.93': {}
+  '@byc/tipc@0.1.0': {}
 
   '@clack/core@0.4.1':
     dependencies:
@@ -5877,12 +5846,6 @@ snapshots:
 
   '@tootallnate/once@2.0.0': {}
 
-  '@ts-morph/common@0.26.1':
-    dependencies:
-      fast-glob: 3.3.2
-      minimatch: 9.0.5
-      path-browserify: 1.0.1
-
   '@tybys/wasm-util@0.9.0':
     dependencies:
       tslib: 2.8.1
@@ -6705,11 +6668,6 @@ snapshots:
 
   argparse@2.0.1: {}
 
-  arktype@2.1.12:
-    dependencies:
-      '@ark/schema': 0.45.2
-      '@ark/util': 0.45.2
-
   array-union@2.1.0: {}
 
   assert-plus@1.0.0:
@@ -6965,8 +6923,6 @@ snapshots:
       mimic-response: 1.0.1
 
   clone@1.0.4: {}
-
-  code-block-writer@13.0.3: {}
 
   color-convert@1.9.3:
     dependencies:
@@ -9558,11 +9514,6 @@ snapshots:
       typescript: 5.6.3
 
   ts-interface-checker@0.1.13: {}
-
-  ts-morph@25.0.1:
-    dependencies:
-      '@ts-morph/common': 0.26.1
-      code-block-writer: 13.0.3
 
   tslib@2.7.0: {}
 
