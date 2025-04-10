@@ -1,7 +1,7 @@
 {
   "name": "@byc/tipc",
   "type": "module",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "packageManager": "pnpm@9.15.9",
   "description": "",
   "author": "",
@@ -72,8 +72,7 @@
     "test": "vitest",
     "coverage": "vitest run --coverage",
     "pkg:publish": "pnpm build & pnpm publish",
-    "pkg:publish:test": "pnpm build & pnpm publish --no-git-checks --dry-run",
-    "pkg:publish:window-tipc": "pnpm --filter @byc/window-tipc pkg:publish"
+    "pkg:publish:test": "pnpm build & pnpm publish --no-git-checks --dry-run"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^4.10.2",

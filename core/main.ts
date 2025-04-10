@@ -21,15 +21,24 @@ interface TipcSchema {
   listeners: FnMap
 }
 
+interface TipcSchemaOptions {
+  getWindowFromId?: (id: number) => BrowserWindow | null
+}
+
 export const joinName = (...args: string[]) => args.join(':')
 
 const handleSet = new Set<string>()
 
+function defaultGetWindowFromId(id: number) {
+  return BrowserWindow.fromId(id)
+}
+
 export function useTipc<
-  T extends TipcSchema = TipcSchema,
-  Handles extends FnMap = T['handlers'],
-  Listener extends FnMap = T['listeners'],
->(schema: T, handles: ConvertHandles<Handles>) {
+  Schema extends TipcSchema = TipcSchema,
+  Handles extends FnMap = Schema['handlers'],
+  Listener extends FnMap = Schema['listeners'],
+>(schema: Schema, handles: ConvertHandles<Handles>, options: TipcSchemaOptions = {}) {
+  const { getWindowFromId = defaultGetWindowFromId } = options
   const name = schema.name
   const channel = joinName(TIPC_HANDLER, name)
 
@@ -46,7 +55,7 @@ export function useTipc<
       throw new Error(`Method '${method}' is nonexistent.`)
 
     try {
-      const win = BrowserWindow.fromId(event.sender.id)
+      const win = getWindowFromId(event.sender.id)
       return await Promise.resolve(func({ event, win }, ...args))
     }
     catch (error) {
@@ -95,4 +104,14 @@ export function clearAllTipc() {
     ipcMain.removeHandler(channel)
   }
   handleSet.clear()
+}
+
+export function createUseTipc(options: TipcSchemaOptions = {}) {
+  return function <
+    Schema extends TipcSchema = TipcSchema,
+    Handles extends FnMap = Schema['handlers'],
+    Listener extends FnMap = Schema['listeners'],
+  >(schema: Schema, handles: ConvertHandles<Handles>) {
+    return useTipc<Schema, Handles, Listener>(schema, handles, options)
+  }
 }

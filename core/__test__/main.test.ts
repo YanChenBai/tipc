@@ -1,5 +1,5 @@
-import type { BrowserWindow } from 'electron'
-import { ipcMain } from 'electron'
+import { BrowserWindow, ipcMain } from 'electron'
+
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { joinName, TIPC_HANDLER, TIPC_LISTENER } from '../common'
 import { clearAllTipc, getAllTipc, useTipc } from '../main'
@@ -9,17 +9,18 @@ const mockWindow = {
   webContents: {
     send: vi.fn(),
   },
-}
+} as unknown as BrowserWindow
 
 vi.mock('electron', () => {
+  const MockBrowserWindow = vi.fn() as unknown as typeof BrowserWindow
+  MockBrowserWindow.fromId = vi.fn((id: number) => id === 1 ? mockWindow : null)
+
   return {
     ipcMain: {
       handle: vi.fn(),
       removeHandler: vi.fn(),
     },
-    BrowserWindow: {
-      fromId: vi.fn(id => id === 1 ? mockWindow : null),
-    },
+    BrowserWindow: MockBrowserWindow,
   }
 })
 
@@ -32,7 +33,7 @@ function clearMock() {
   afterEach(clear)
 }
 
-describe('返回方法测试', () => {
+describe('useTipc测试', () => {
   clearMock()
 
   it('正常流程的使用', () => {
@@ -131,6 +132,50 @@ describe('返回方法测试', () => {
         },
         ...args,
       )
+  })
+
+  it('不传入获取窗口函数', async () => {
+    const name = 'test'
+    const schema = defineSchema<{ test: () => void }>(name)
+
+    const { init } = useTipc(schema, {
+      test: vi.fn().mockResolvedValue(1),
+    })
+
+    init()
+
+    const event = { sender: { id: 1 } } as any
+
+    const handle = vi.mocked(ipcMain.handle).mock.calls[0][1]
+    await handle(event, {
+      method: 'test',
+      args: [],
+    })
+    expect(vi.mocked(BrowserWindow.fromId)).toHaveBeenCalled()
+  })
+
+  it('自定义获取窗口函数', async () => {
+    const name = 'test'
+    const schema = defineSchema<{ test: () => void }>(name)
+
+    const getWindowFromId = vi.fn((id: number) => id as any)
+
+    const { init } = useTipc(schema, {
+      test: vi.fn().mockResolvedValue(1),
+    }, {
+      getWindowFromId,
+    })
+
+    init()
+
+    const event = { sender: { id: 1 } } as any
+
+    const handle = vi.mocked(ipcMain.handle).mock.calls[0][1]
+    await handle(event, {
+      method: 'test',
+      args: [],
+    })
+    expect(vi.mocked(getWindowFromId)).toHaveBeenCalled()
   })
 })
 
