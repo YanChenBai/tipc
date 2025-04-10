@@ -115,3 +115,8 @@ export function createUseTipc(options: TipcSchemaOptions = {}) {
     return useTipc<Schema, Handles, Listener>(schema, handles, options)
   }
 }
+
+export function batchInitTipc(...tipcs: ReturnType<typeof useTipc>[]) {
+  tipcs.forEach(tipc => tipc.init())
+  return () => tipcs.forEach(tipc => tipc.off())
+}
